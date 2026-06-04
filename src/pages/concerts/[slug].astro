@@ -3,6 +3,8 @@ import { getCollection, render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import { formatDate } from '../../lib/concerts';
 import { venueColor, venueTextColor, venueTint } from '../../lib/venueColor';
+import { musicEventSchema } from '../../lib/eventSchema';
+import AddToCalendar from '../../components/AddToCalendar.astro';
 import styles from './detail.module.css';
 
 export async function getStaticPaths() {
@@ -22,6 +24,8 @@ const vcText = venueTextColor(vc);
 const vcTint = venueTint(vc);
 const hasBody = (concert.body ?? '').trim().length > 0;
 const showTitle = data.title && data.title !== data.artist;
+const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(data.venue)}`;
+const eventSchema = musicEventSchema(concert, Astro.site ?? Astro.url);
 
 const metaDescription =
   data.description ?? `${data.artist} på ${data.venue}, ${formatDate(data.date)}.`;
@@ -32,10 +36,11 @@ const metaDescription =
   description={metaDescription}
   image={data.image}
   ogType="article"
+  jsonLd={eventSchema}
 >
   <article class={styles.wrap} style={`--vc:${vc};--vc-text:${vcText};--vc-tint:${vcTint}`}>
     <a class={styles.back} href="/">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <path d="M15 6l-6 6 6 6" />
       </svg>
       Alla konserter
@@ -78,25 +83,35 @@ const metaDescription =
         )}
       </dl>
 
-      {data.ticketUrl && (
-        <a class={styles.cta} href={data.ticketUrl} target="_blank" rel="noopener">
-          Köp biljetter
+      <div class={styles.actions}>
+        {data.ticketUrl && (
+          <a class={styles.cta} href={data.ticketUrl} target="_blank" rel="noopener">
+            Köp biljetter
+          </a>
+        )}
+        <AddToCalendar
+          title={data.artist}
+          venue={data.venue}
+          date={data.date}
+          time={data.time}
+          description={data.description}
+          uid={concert.id}
+          variant="full"
+        />
+        <a class={styles.maps} href={mapsUrl} target="_blank" rel="noopener">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0Z" />
+            <circle cx="12" cy="10" r="3" />
+          </svg>
+          Visa på karta
         </a>
-      )}
+      </div>
     </header>
 
     {hasBody && (
       <div class={styles.content}>
         <Content />
       </div>
-    )}
-
-    {data.sourceUrl && (
-      <p class={styles.source}>
-        Källa: <a href={data.sourceUrl} target="_blank" rel="noopener">
-          {new URL(data.sourceUrl).hostname}
-        </a>
-      </p>
     )}
   </article>
 </Layout>

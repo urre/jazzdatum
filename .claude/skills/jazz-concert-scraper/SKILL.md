@@ -45,7 +45,7 @@ This is the helper script's default `--content-dir`. Override with
 | 11 | Ystad Sweden Jazz Festival | https://ystadjazz.se/biljetter/ | Use the **/biljetter/** page for dates; landing page lists artists only. Many stages — attribute `venue: "Ystad Sweden Jazz Festival"`, put the stage in the description |
 | 12 | Umeå Jazzfestival | https://umeajazzfestival.se/program | Stages (Idun/Studion/Äpplet) → put in description, `venue: "Umeå Jazzfestival"` |
 | 13 | Stockholm Jazz | https://stockholmjazz.se/program | Festival (Oct); detailed program often not published until closer — may return only dates |
-| 14 | Göteborgs Symfoniker (GSO) | https://www.gso.se/gsoplay/konserter-och-klipp/jazzkonserter/ | Sparse; listings often lack dates — verify before adding |
+| 14 | Göteborgs Symfoniker (GSO) | https://www.gso.se/program/konserter/?concert_genre%5B0%5D=13 | Program filtered to jazz (genre 13). Venue: "Göteborgs Konserthus". The /gsoplay/ page lacks dates — use this one |
 | 15 | Malmö Live | https://malmolive.se/kommande-jazz-pa-malmo-live-konserthus | Stage (Kuben/Konsertsalen) → description, `venue: "Malmö Live"`; has prices + ticket links |
 | 16 | Tickster (jazz-taggade) | https://www.tickster.com/se/sv/events/tagged/jazz | National platform — many cities/venues. Use the event's real venue; **may overlap other sources, so dedup matters**. Often no times/prices |
 

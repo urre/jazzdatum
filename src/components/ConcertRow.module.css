@@ -1,17 +1,37 @@
 .row {
+  position: relative;
   display: flex;
   align-items: center;
   gap: var(--space-4);
   padding: var(--space-3) var(--space-3);
   border-radius: var(--radius-sm);
-  text-decoration: none;
   color: inherit;
-  transition: background 0.12s ease, transform 0.12s ease;
+  transition: background 0.12s ease;
 }
 
 .row:hover {
-  background: var(--color-bg-purple);
-  transform: translateX(2px);
+  background: var(--color-bg-grey);
+}
+
+/* Stretched link: the artist link covers the whole row so it stays clickable,
+   while the calendar dropdown (z-index above) remains its own control. */
+.titleLink {
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--color-ink);
+  text-decoration: none;
+}
+
+.titleLink::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.titleLink:hover {
+  color: var(--color-accent);
 }
 
 /* Colour-coded venue tag — the scannable element */
@@ -35,22 +55,13 @@
   flex: 1;
   min-width: 0;
   display: flex;
-  align-items: baseline;
-  gap: var(--space-3);
+  flex-direction: column;
+  gap: 2px;
 }
 
-.artist {
-  font-size: 1.15rem;
-  font-weight: 700;
-  color: var(--color-ink);
-  line-height: 1.3;
-  overflow-wrap: anywhere;
-}
-
-.time {
+.sub {
   font-size: 0.9rem;
   color: var(--color-muted);
-  flex-shrink: 0;
 }
 
 .right {

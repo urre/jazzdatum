@@ -1,0 +1,92 @@
+---
+// Add-to-calendar dropdown, adapted for Astro from the curity-website React
+// component. JS-free: Google is a plain link, the .ics is a build-time data URI
+// download (works for Apple Calendar, Outlook and any iCal app). A small global
+// script (bundled once) just closes the dropdown on outside-click / selection.
+interface Props {
+  title: string;
+  venue: string;
+  date: Date;
+  time?: string;
+  description?: string;
+  /** Stable unique id for the event UID (e.g. the concert slug). */
+  uid: string;
+  variant?: 'full' | 'compact';
+}
+
+const { title, venue, date, time, description = '', uid, variant = 'full' } = Astro.props;
+import styles from './AddToCalendar.module.css';
+
+const pad = (n: number) => String(n).padStart(2, '0');
+const [hRaw, mRaw] = (time ?? '19:00').split(':');
+const hh = Number.parseInt(hRaw, 10) || 19;
+const mm = Number.parseInt(mRaw, 10) || 0;
+
+// Build from the date's UTC parts (frontmatter dates are UTC midnight) + the
+// wall-clock time, then emit floating local times (no Z) — correct for Sweden.
+const start = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), hh, mm));
+const end = new Date(start.getTime() + 2 * 60 * 60 * 1000); // 2h default duration
+const fmt = (d: Date) =>
+  `${d.getUTCFullYear()}${pad(d.getUTCMonth() + 1)}${pad(d.getUTCDate())}T${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}00`;
+const startStr = fmt(start);
+const endStr = fmt(end);
+
+const googleUrl =
+  `https://calendar.google.com/calendar/render?action=TEMPLATE` +
+  `&text=${encodeURIComponent(title)}` +
+  `&details=${encodeURIComponent(description)}` +
+  `&location=${encodeURIComponent(venue)}` +
+  `&dates=${startStr}/${endStr}&ctz=Europe/Stockholm`;
+
+const escIcs = (s: string) =>
+  String(s).replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
+
+const ics = [
+  'BEGIN:VCALENDAR',
+  'VERSION:2.0',
+  'PRODID:-//Jazzdatum.se//SV',
+  'CALSCALE:GREGORIAN',
+  'BEGIN:VEVENT',
+  `UID:${uid}@jazzdatum.se`,
+  `DTSTAMP:${startStr}`,
+  `DTSTART:${startStr}`,
+  `DTEND:${endStr}`,
+  `SUMMARY:${escIcs(title)}`,
+  description ? `DESCRIPTION:${escIcs(description)}` : '',
+  `LOCATION:${escIcs(venue)}`,
+  'END:VEVENT',
+  'END:VCALENDAR',
+].filter(Boolean).join('\r\n');
+
+const icsHref = `data:text/calendar;charset=utf-8,${encodeURIComponent(ics)}`;
+const fileName = `${title.replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-+|-+$/g, '').toLowerCase() || 'konsert'}.ics`;
+
+const CalIcon =
+  'M8 2v4M16 2v4M3 10h18'; // tick marks; rect drawn separately
+---
+
+<details class:list={[styles.cal, { [styles.compact]: variant === 'compact' }]} data-cal>
+  <summary class={styles.trigger} aria-label="Lägg till i kalender" title="Lägg till i kalender">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect x="3" y="4" width="18" height="18" rx="2" />
+      <path d={CalIcon} />
+    </svg>
+    {variant === 'full' && <span>Lägg till i kalender</span>}
+  </summary>
+  <div class={styles.menu}>
+    <a class={styles.item} href={googleUrl} target="_blank" rel="noopener">Google Kalender</a>
+    <a class={styles.item} href={icsHref} download={fileName}>Ladda ner (.ics)</a>
+  </div>
+</details>
+
+<script>
+  // One global handler for all dropdowns (Astro bundles this once).
+  document.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement | null;
+    if (!target) return;
+    const pickedOption = !!target.closest('[data-cal] a');
+    document.querySelectorAll<HTMLDetailsElement>('details[data-cal][open]').forEach((d) => {
+      if (pickedOption || !d.contains(target)) d.open = false;
+    });
+  });
+</script>

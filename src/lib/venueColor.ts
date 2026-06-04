@@ -1,7 +1,9 @@
 // Deterministic colour per venue, shared by the list rows and the detail page
 // so a venue keeps the same hue everywhere.
 
-const VENUE_COLORS = ['#7c5cff', '#f3801f', '#1fb6a6', '#ef5da8', '#f6b73c', '#3b82f6', '#34b27b'];
+// Muted, vintage/hipster palette — terracotta, mustard, olive, teal,
+// dusty blue, plum, slate. No bright orange.
+const VENUE_COLORS = ['#bf6a4e', '#d4a23c', '#7e8c54', '#2f8d83', '#557a9b', '#8b6a8c', '#5f6b7a'];
 
 export function venueColor(key: string): string {
   let hash = 0;

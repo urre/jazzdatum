@@ -21,6 +21,23 @@ const maxDate = dates.length ? iso(dates[dates.length - 1]) : undefined;
 
 const searchText = (c: Concert) =>
   [c.data.artist, c.data.venue, c.data.title].join(' ').toLowerCase();
+
+// Server-render the first page already paginated so there's no layout shift
+// when the client script hydrates (it recomputes the same page-1 state).
+const PAGE_SIZE = 25;
+const total = concerts.length;
+const pageCount = Math.max(1, Math.ceil(total / PAGE_SIZE));
+const multiPage = pageCount > 1;
+const initialCount =
+  total === 0 ? '0 konserter' : `Visar 1–${Math.min(PAGE_SIZE, total)} av ${total} konserter`;
+const pageInfoText = `Sida 1 / ${pageCount}`;
+
+let runningIndex = 0;
+const groupsWithStart = groups.map((group) => {
+  const startIndex = runningIndex;
+  runningIndex += group.concerts.length;
+  return { group, startIndex };
+});
 ---
 
 {concerts.length === 0 ? (
@@ -29,7 +46,7 @@ const searchText = (c: Concert) =>
   <div data-browser>
     <div class={styles.controls}>
       <div class={styles.searchField}>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <circle cx="11" cy="11" r="7" /><path d="M21 21l-4.3-4.3" />
         </svg>
         <input
@@ -59,19 +76,26 @@ const searchText = (c: Concert) =>
       </select>
     </div>
 
-    <p class={styles.count} data-count></p>
+    <p class={styles.count} data-count aria-live="polite">{initialCount}</p>
+
+    <nav class:list={[styles.pagination, styles.paginationTop]} data-pagination aria-label="Sidnavigering (topp)" hidden={!multiPage}>
+      <button type="button" class={styles.pageBtn} data-prev disabled>← Föregående</button>
+      <span class={styles.pageInfo} data-page-info>{pageInfoText}</span>
+      <button type="button" class={styles.pageBtn} data-next disabled={!multiPage}>Nästa →</button>
+    </nav>
 
     <div class={styles.results} data-results>
-      {groups.map((group) => (
-        <section class={styles.group} data-group>
+      {groupsWithStart.map(({ group, startIndex }) => (
+        <section class={styles.group} data-group hidden={startIndex >= PAGE_SIZE}>
           <h2 class={styles.dateHeading} data-group-date>{group.label}</h2>
           <ul class={styles.list}>
-            {group.concerts.map((concert) => (
+            {group.concerts.map((concert, i) => (
               <li
                 data-row
                 data-search={searchText(concert)}
                 data-venue={concert.data.venue}
                 data-date={iso(concert.data.date)}
+                hidden={startIndex + i >= PAGE_SIZE}
               >
                 <ConcertRow concert={concert} />
               </li>
@@ -83,10 +107,10 @@ const searchText = (c: Concert) =>
 
     <p class={styles.noResults} data-no-results>Inga konserter matchar din filtrering.</p>
 
-    <nav class={styles.pagination} data-pagination aria-label="Sidnavigering" hidden>
-      <button type="button" class={styles.pageBtn} data-prev>← Föregående</button>
-      <span class={styles.pageInfo} data-page-info></span>
-      <button type="button" class={styles.pageBtn} data-next>Nästa →</button>
+    <nav class={styles.pagination} data-pagination aria-label="Sidnavigering" hidden={!multiPage}>
+      <button type="button" class={styles.pageBtn} data-prev disabled>← Föregående</button>
+      <span class={styles.pageInfo} data-page-info>{pageInfoText}</span>
+      <button type="button" class={styles.pageBtn} data-next disabled={!multiPage}>Nästa →</button>
     </nav>
   </div>
 )}
@@ -104,10 +128,11 @@ const searchText = (c: Concert) =>
     const results = root.querySelector<HTMLElement>('[data-results]');
     const count = root.querySelector<HTMLElement>('[data-count]');
     const noResults = root.querySelector<HTMLElement>('[data-no-results]');
-    const pagination = root.querySelector<HTMLElement>('[data-pagination]');
-    const pageInfo = root.querySelector<HTMLElement>('[data-page-info]');
-    const prevBtn = root.querySelector<HTMLButtonElement>('[data-prev]');
-    const nextBtn = root.querySelector<HTMLButtonElement>('[data-next]');
+    // There are two pagination bars (top + bottom) — drive them together.
+    const paginations = Array.from(root.querySelectorAll<HTMLElement>('[data-pagination]'));
+    const pageInfos = Array.from(root.querySelectorAll<HTMLElement>('[data-page-info]'));
+    const prevBtns = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-prev]'));
+    const nextBtns = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-next]'));
 
     let page = 1;
 
@@ -145,10 +170,10 @@ const searchText = (c: Concert) =>
           ? '0 konserter'
           : `Visar ${start + 1}–${Math.min(end, total)} av ${total} konserter`;
       }
-      if (pageInfo) pageInfo.textContent = `Sida ${page} / ${pageCount}`;
-      if (prevBtn) prevBtn.disabled = page <= 1;
-      if (nextBtn) nextBtn.disabled = page >= pageCount;
-      if (pagination) pagination.hidden = pageCount <= 1;
+      for (const el of pageInfos) el.textContent = `Sida ${page} / ${pageCount}`;
+      for (const b of prevBtns) b.disabled = page <= 1;
+      for (const b of nextBtns) b.disabled = page >= pageCount;
+      for (const nav of paginations) nav.hidden = pageCount <= 1;
       if (noResults) noResults.style.display = total === 0 ? 'block' : 'none';
     }
 
@@ -168,8 +193,8 @@ const searchText = (c: Concert) =>
     dateFrom?.addEventListener('change', reset);
     dateTo?.addEventListener('change', reset);
     pageSizeSel?.addEventListener('change', reset);
-    prevBtn?.addEventListener('click', () => goTo(page - 1));
-    nextBtn?.addEventListener('click', () => goTo(page + 1));
+    for (const b of prevBtns) b.addEventListener('click', () => goTo(page - 1));
+    for (const b of nextBtns) b.addEventListener('click', () => goTo(page + 1));
 
     render();
   }

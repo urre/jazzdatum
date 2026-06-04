@@ -26,7 +26,7 @@
 
 .back:hover {
   color: var(--color-accent);
-  background: var(--color-bg-purple);
+  background: var(--color-bg-grey);
   transform: translateX(-2px);
 }
 
@@ -99,9 +99,16 @@ a.venue:hover {
   margin-top: var(--space-1);
 }
 
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
 .cta {
   display: inline-block;
-  margin-top: var(--space-2);
   background: var(--vc);
   color: var(--vc-text);
   font-weight: 700;
@@ -115,6 +122,26 @@ a.venue:hover {
 .cta:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow);
+}
+
+.maps {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: 600;
+  color: var(--color-ink);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  padding: var(--space-3) var(--space-5);
+  box-shadow: var(--shadow-sm);
+  text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.maps:hover {
+  background: var(--color-bg-grey);
+  color: var(--color-accent);
 }
 
 .content {

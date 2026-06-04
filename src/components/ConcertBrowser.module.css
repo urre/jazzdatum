@@ -96,10 +96,33 @@
 
 .pagination {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: var(--space-4);
+  gap: var(--space-3) var(--space-4);
   margin-top: var(--space-6);
+}
+
+/* Mobile: stack the filters, two selects per row, full-width search */
+@media (max-width: 640px) {
+  .results {
+    padding: var(--space-2) var(--space-4) var(--space-4);
+  }
+  .search {
+    flex: 1 1 100%;
+  }
+  .select {
+    flex: 1 1 calc(50% - var(--space-3) / 2);
+    min-width: 0;
+  }
+  .pageBtn {
+    flex: 1 1 auto;
+  }
+}
+
+.paginationTop {
+  margin-top: 0;
+  margin-bottom: var(--space-8);
 }
 
 .pageBtn {
@@ -116,7 +139,7 @@
 }
 
 .pageBtn:hover:not(:disabled) {
-  background: var(--color-bg-purple);
+  background: var(--color-bg-grey);
   color: var(--color-accent);
 }
 
