@@ -125,7 +125,6 @@ const groupsWithStart = groups.map((group) => {
     const pageSizeSel = root.querySelector<HTMLSelectElement>('[data-page-size]');
     const rows = Array.from(root.querySelectorAll<HTMLElement>('[data-results] [data-row]'));
     const groups = Array.from(root.querySelectorAll<HTMLElement>('[data-results] [data-group]'));
-    const results = root.querySelector<HTMLElement>('[data-results]');
     const count = root.querySelector<HTMLElement>('[data-count]');
     const noResults = root.querySelector<HTMLElement>('[data-no-results]');
     // There are two pagination bars (top + bottom) — drive them together.
@@ -185,7 +184,6 @@ const groupsWithStart = groups.map((group) => {
     function goTo(p: number) {
       page = p;
       render();
-      results?.scrollIntoView({ block: 'start' });
     }
 
     input?.addEventListener('input', reset);
