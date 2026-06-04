@@ -35,7 +35,6 @@
   position: relative;
   background: var(--vc-tint);
   border: 1px solid var(--color-border);
-  border-top: 6px solid var(--vc);
   border-radius: var(--radius);
   box-shadow: var(--shadow-sm);
   padding: var(--space-8);

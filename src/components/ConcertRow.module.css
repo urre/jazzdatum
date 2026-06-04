@@ -16,11 +16,16 @@
 /* Stretched link: the artist link covers the whole row so it stays clickable,
    while the calendar dropdown (z-index above) remains its own control. */
 .titleLink {
+  display: block;
   font-size: 1.1rem;
   font-weight: 700;
   line-height: 1.25;
   color: var(--color-ink);
   text-decoration: none;
+  /* Truncate on desktop so the city/time columns line up for scanning */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .titleLink::after {
@@ -54,12 +59,30 @@
 .main {
   flex: 1;
   min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
 }
 
+/* City / time as aligned columns (desktop) for easy scanning */
+.cityCol {
+  flex-shrink: 0;
+  width: 150px;
+  color: var(--color-ink-soft);
+  font-size: 0.95rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.timeCol {
+  flex-shrink: 0;
+  width: 52px;
+  text-align: right;
+  color: var(--color-muted);
+  font-size: 0.95rem;
+}
+
+/* Sub-line (city · time) — mobile only */
 .sub {
+  display: none;
   font-size: 0.9rem;
   color: var(--color-muted);
 }
@@ -83,7 +106,7 @@
   color: var(--color-accent);
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .row {
     flex-wrap: wrap;
     gap: var(--space-2) var(--space-3);
@@ -91,5 +114,22 @@
   .venue {
     width: auto;
     order: -1;
+  }
+  .main {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .titleLink {
+    white-space: normal;
+    overflow: visible;
+  }
+  /* On mobile, fold city + time into the sub-line, hide the columns */
+  .cityCol,
+  .timeCol {
+    display: none;
+  }
+  .sub {
+    display: block;
   }
 }
