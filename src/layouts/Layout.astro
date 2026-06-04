@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import { ClientRouter } from 'astro:transitions';
 import styles from './Layout.module.css';
 
 interface Props {
@@ -11,6 +12,8 @@ interface Props {
   ogType?: string;
   /** Page-specific JSON-LD structured data object(s). */
   jsonLd?: object | object[];
+  /** Render edge-to-edge without the centered max-width container. */
+  fullWidth?: boolean;
 }
 
 const {
@@ -19,6 +22,7 @@ const {
   image = '/og.png',
   ogType = 'website',
   jsonLd,
+  fullWidth = false,
 } = Astro.props;
 
 const siteName = 'Jazzkonserter.se';
@@ -56,12 +60,14 @@ const schemas = [websiteSchema, orgSchema, ...pageSchemas];
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
     <meta name="apple-mobile-web-app-title" content="Jazzkonserter" />
-    <link rel="preload" href="/fonts/Figtree-Bold.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/Figtree-Regular.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/Inter-Bold.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/Inter-Regular.woff2" as="font" type="font/woff2" crossorigin />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <link rel="alternate" type="application/rss+xml" title={`${siteName} – kommande konserter`} href="/rss.xml" />
+
+    <ClientRouter />
 
     <!-- Open Graph -->
     <meta property="og:type" content={ogType} />
@@ -88,9 +94,13 @@ const schemas = [websiteSchema, orgSchema, ...pageSchemas];
   <body>
     <a class="skip-link" href="#main">Hoppa till innehåll</a>
     <main id="main" class={styles.main}>
-      <div class="container">
+      {fullWidth ? (
         <slot />
-      </div>
+      ) : (
+        <div class="container">
+          <slot />
+        </div>
+      )}
     </main>
   </body>
 </html>

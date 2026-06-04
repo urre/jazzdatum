@@ -1,20 +1,26 @@
 .browser {
   display: grid;
-  grid-template-columns: 250px minmax(0, 1fr);
-  gap: var(--space-8);
-  align-items: start;
+  grid-template-columns: 30% minmax(0, 1fr);
+  gap: 0;
+  align-items: stretch;
+  min-height: 100vh;
 }
 
-/* ---- Sidebar ---- */
+/* ---- Sidebar (edge-to-edge, flush left, full height) ---- */
 .sidebar {
-  position: sticky;
-  top: var(--space-4);
-  align-self: start;
   background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-sm);
+  border-right: 1px solid var(--color-border);
+}
+
+/* Inner wrapper sticks while the white panel stretches full height. */
+.sidebarInner {
+  position: sticky;
+  top: 0;
   padding: var(--space-6);
+}
+
+.filterToggle {
+  display: none;
 }
 
 .sidebarHead {
@@ -131,17 +137,28 @@
   min-width: 0;
 }
 
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3) var(--space-4);
+  padding: var(--space-4) var(--space-6);
+  background: var(--color-surface);
+}
+
 .count {
   font-size: 0.9rem;
   color: var(--color-muted);
   font-weight: 600;
-  margin-bottom: var(--space-4);
+  margin: 0;
 }
 
 .results {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius);
+  border-left: none;
+  border-right: none;
   box-shadow: var(--shadow-sm);
   padding: var(--space-4) var(--space-6) var(--space-6);
 }
@@ -184,12 +201,15 @@
   align-items: center;
   justify-content: center;
   gap: var(--space-3) var(--space-4);
-  margin-top: var(--space-6);
+  background: var(--color-surface);
+  padding: var(--space-4) var(--space-6);
+  margin-top: 0;
 }
 
 .paginationTop {
-  margin-top: 0;
-  margin-bottom: var(--space-6);
+  margin: 0;
+  padding: 0;
+  background: none;
 }
 
 .pageBtn {
@@ -223,13 +243,53 @@
   text-align: center;
 }
 
-/* ---- Responsive: stack sidebar on top ---- */
+/* ---- Responsive: stack sidebar on top, collapse filters behind a button ---- */
 @media (max-width: 900px) {
   .browser {
     grid-template-columns: 1fr;
     gap: var(--space-6);
+    padding: 0 var(--space-4);
+    min-height: 0;
   }
   .sidebar {
+    border: 1px solid var(--color-border);
+  }
+  .sidebarInner {
     position: static;
+  }
+
+  .filterToggle {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    width: 100%;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    color: var(--color-ink);
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    padding: var(--space-3) var(--space-4);
+  }
+  .filterToggle span {
+    margin-right: auto;
+  }
+  .toggleChevron {
+    transition: transform 0.15s ease;
+  }
+  .filterToggle[aria-expanded='true'] .toggleChevron {
+    transform: rotate(180deg);
+  }
+
+  .sidebarBody {
+    display: none;
+    margin-top: var(--space-4);
+  }
+  .sidebarBody[data-open] {
+    display: block;
+  }
+
+  .results {
+    border: 1px solid var(--color-border);
   }
 }

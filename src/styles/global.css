@@ -1,15 +1,14 @@
-/* Self-hosted Figtree (OFL) — a free, geometric sans in the spirit of Google
-   Sans. Google Sans itself is proprietary and can't be self-hosted. */
+/* Self-hosted Inter (OFL). */
 @font-face {
-  font-family: 'Figtree';
-  src: url('/fonts/Figtree-Regular.woff2') format('woff2');
+  font-family: 'Inter';
+  src: url('/fonts/Inter-Regular.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: 'Figtree';
-  src: url('/fonts/Figtree-Bold.woff2') format('woff2');
+  font-family: 'Inter';
+  src: url('/fonts/Inter-Bold.woff2') format('woff2');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -60,7 +59,7 @@
   --shadow: 0 14px 40px rgba(31, 26, 46, 0.08);
 
   /* Typography */
-  --font-sans: 'Figtree', system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-sans: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --content-width: 1100px;
 }
 
@@ -76,10 +75,10 @@ html {
 
 body {
   font-family: var(--font-sans);
-  font-weight: 400; /* Google Sans Regular for body text */
+  font-weight: 400;
   line-height: 1.6;
   color: var(--color-ink);
-  background: var(--color-bg);
+  background: var(--color-surface);
   -webkit-font-smoothing: antialiased;
 }
 
@@ -90,7 +89,7 @@ h4,
 h5,
 h6 {
   font-family: var(--font-sans);
-  font-weight: 700; /* Google Sans Bold for headings */
+  font-weight: 700;
   letter-spacing: -0.01em;
 }
 
@@ -154,6 +153,12 @@ img {
 .button--ghost:hover {
   background: var(--color-bg-grey);
   box-shadow: none;
+}
+
+/* Pressed state — subtle push-down on any button */
+button:active,
+.button:active {
+  transform: translateY(1px);
 }
 
 /* Accessible focus ring for keyboard users */

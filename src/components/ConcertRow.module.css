@@ -10,7 +10,7 @@
 }
 
 .row:hover {
-  background: var(--color-bg-grey);
+  background: var(--color-bg);
 }
 
 /* Stretched link: the artist link covers the whole row so it stays clickable,
@@ -112,7 +112,7 @@
     gap: var(--space-2) var(--space-3);
   }
   .venue {
-    width: auto;
+    width: 132px;
     order: -1;
   }
   .main {

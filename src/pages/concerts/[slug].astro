@@ -5,6 +5,7 @@ import { formatDate } from '../../lib/concerts';
 import { venueColor, venueTextColor, venueTint } from '../../lib/venueColor';
 import { musicEventSchema } from '../../lib/eventSchema';
 import AddToCalendar from '../../components/AddToCalendar.astro';
+import SiteAbout from '../../components/SiteAbout.astro';
 import styles from './detail.module.css';
 
 export async function getStaticPaths() {
@@ -37,81 +38,97 @@ const metaDescription =
   image={data.image}
   ogType="article"
   jsonLd={eventSchema}
+  fullWidth
 >
-  <article class={styles.wrap} style={`--vc:${vc};--vc-text:${vcText};--vc-tint:${vcTint}`}>
-    <a class={styles.back} href="/">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M15 6l-6 6 6 6" />
-      </svg>
-      Alla konserter
-    </a>
-
-    <header class={styles.hero}>
-      <div class={styles.heroHead}>
-        {data.venueUrl ? (
-          <a class={styles.venue} href={data.venueUrl} target="_blank" rel="noopener">{data.venue}</a>
-        ) : (
-          <span class={styles.venue}>{data.venue}</span>
-        )}
-      </div>
-
-      <h1 class={styles.artist}>{data.artist}</h1>
-      {showTitle && <p class={styles.title}>{data.title}</p>}
-
-      <dl class={styles.facts}>
-        <div class={styles.fact}>
-          <dt>Datum</dt>
-          <dd>{formatDate(data.date)}</dd>
-        </div>
-        {data.time && (
-          <div class={styles.fact}>
-            <dt>Tid</dt>
-            <dd>{data.time}</dd>
-          </div>
-        )}
-        {data.price && (
-          <div class={styles.fact}>
-            <dt>Pris</dt>
-            <dd>{data.price}</dd>
-          </div>
-        )}
-        {data.genre.length > 0 && (
-          <div class={styles.fact}>
-            <dt>Genre</dt>
-            <dd>{data.genre.join(', ')}</dd>
-          </div>
-        )}
-      </dl>
-
-      <div class={styles.actions}>
-        {data.ticketUrl && (
-          <a class={styles.cta} href={data.ticketUrl} target="_blank" rel="noopener">
-            Köp biljetter
-          </a>
-        )}
-        <AddToCalendar
-          title={data.artist}
-          venue={data.venue}
-          date={data.date}
-          time={data.time}
-          description={data.description}
-          uid={concert.id}
-          variant="full"
-        />
-        <a class={styles.maps} href={mapsUrl} target="_blank" rel="noopener">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0Z" />
-            <circle cx="12" cy="10" r="3" />
+  <div class={styles.browser} style={`--vc:${vc};--vc-text:${vcText};--vc-tint:${vcTint}`}>
+    <aside class={styles.sidebar}>
+      <div class={styles.sidebarInner}>
+        <a class={styles.back} href="/">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M15 6l-6 6 6 6" />
           </svg>
-          Visa på karta
+          Alla konserter
         </a>
-      </div>
-    </header>
 
-    {hasBody && (
-      <div class={styles.content}>
-        <Content />
+        <SiteAbout />
       </div>
-    )}
-  </article>
+    </aside>
+
+    <div class={styles.main}>
+      <article class={styles.wrap}>
+        <header class={styles.hero}>
+          <div class={styles.heroHead}>
+            <span class={styles.venue}>{data.venue}</span>
+          </div>
+
+          <h1 class={styles.artist}>{data.artist}</h1>
+          {showTitle && <p class={styles.title}>{data.title}</p>}
+
+          <dl class={styles.facts}>
+            <div class={styles.fact}>
+              <dt>Datum</dt>
+              <dd>{formatDate(data.date)}</dd>
+            </div>
+            {data.time && (
+              <div class={styles.fact}>
+                <dt>Tid</dt>
+                <dd>{data.time}</dd>
+              </div>
+            )}
+            {data.price && (
+              <div class={styles.fact}>
+                <dt>Pris</dt>
+                <dd>{data.price}</dd>
+              </div>
+            )}
+            {data.genre.length > 0 && (
+              <div class={styles.fact}>
+                <dt>Genre</dt>
+                <dd>{data.genre.join(', ')}</dd>
+              </div>
+            )}
+          </dl>
+
+          <div class={styles.actions}>
+            {data.ticketUrl && (
+              <a class={styles.cta} href={data.ticketUrl} target="_blank" rel="noopener">
+                Köp biljetter
+              </a>
+            )}
+            <AddToCalendar
+              title={data.artist}
+              venue={data.venue}
+              date={data.date}
+              time={data.time}
+              description={data.description}
+              uid={concert.id}
+              variant="full"
+            />
+            {data.venueUrl && (
+              <a class={styles.secondary} href={data.venueUrl} target="_blank" rel="noopener">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="12" cy="12" r="9" />
+                  <path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18" />
+                </svg>
+                Webbplats
+              </a>
+            )}
+            <a class={styles.secondary} href={mapsUrl} target="_blank" rel="noopener">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0Z" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
+              Visa på karta
+            </a>
+          </div>
+        </header>
+
+        {hasBody && (
+          <div class={styles.content}>
+            <Content />
+          </div>
+        )}
+      </article>
+    </div>
+  </div>
 </Layout>

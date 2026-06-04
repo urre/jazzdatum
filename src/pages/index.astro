@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import ConcertBrowser from '../components/ConcertBrowser.astro';
+import SiteAbout from '../components/SiteAbout.astro';
 import { getUpcomingConcerts } from '../lib/concerts';
 import styles from './index.module.css';
 
@@ -22,15 +23,10 @@ const itemListSchema = {
 };
 ---
 
-<Layout title="Jazzkonserter.se" jsonLd={itemListSchema}>
+<Layout title="Jazzkonserter.se" jsonLd={itemListSchema} fullWidth>
   <ConcertBrowser concerts={upcoming}>
     <h1 class={styles.pageTitle}><a href="/">Jazzkonserter</a></h1>
-  </ConcertBrowser>
 
-  <section class={styles.about}>
-    <h2>Om Jazzkonserter.se</h2>
-    <p>
-      Av <a href="https://urre.me">Urban Sandén</a>. Nya konserter läggs till kontinuerligt. Besök också <a href="https://www.jazztips.se/">Jazztips.se</a>
-    </p>
-  </section>
+    <SiteAbout slot="footer" />
+  </ConcertBrowser>
 </Layout>

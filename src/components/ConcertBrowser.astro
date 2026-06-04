@@ -42,7 +42,21 @@ const groupsWithStart = groups.map((group) => {
 
 <div data-browser class={styles.browser}>
   <aside class={styles.sidebar}>
-    <div class={styles.sidebarHead}>
+    <div class={styles.sidebarInner}>
+    <slot />
+
+    <button type="button" class={styles.filterToggle} data-sidebar-toggle aria-expanded="false" aria-controls="cb-filters">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M22 3H2l8 9.5V19l4 2v-8.5L22 3z" />
+      </svg>
+      <span>Filter</span>
+      <svg class={styles.toggleChevron} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M6 9l6 6 6-6" />
+      </svg>
+    </button>
+
+    <div class={styles.sidebarBody} id="cb-filters" data-sidebar-body>
+      <div class={styles.sidebarHead}>
       <div>
         <p class={styles.sidebarTitle}>Filter</p>
         <p class={styles.activeCount} data-active-count aria-live="polite">Inga aktiva</p>
@@ -99,22 +113,26 @@ const groupsWithStart = groups.map((group) => {
         <option value="all">Visa alla</option>
       </select>
     </div>
+
+      <slot name="footer" />
+    </div>
+    </div>
   </aside>
 
   <div class={styles.main}>
-    <slot />
-
     {total === 0 ? (
       <p class={styles.empty}>Inga kommande konserter just nu. Kolla tillbaka snart!</p>
     ) : (
       <>
-        <p class={styles.count} data-count aria-live="polite">{initialCount}</p>
+        <div class={styles.toolbar}>
+          <p class={styles.count} data-count aria-live="polite">{initialCount}</p>
 
-        <nav class:list={[styles.pagination, styles.paginationTop]} data-pagination aria-label="Sidnavigering (topp)" hidden={!multiPage}>
-          <button type="button" class={styles.pageBtn} data-prev disabled>← Föregående</button>
-          <span class={styles.pageInfo} data-page-info>{pageInfoText}</span>
-          <button type="button" class={styles.pageBtn} data-next disabled={!multiPage}>Nästa →</button>
-        </nav>
+          <nav class:list={[styles.pagination, styles.paginationTop]} data-pagination aria-label="Sidnavigering (topp)" hidden={!multiPage}>
+            <button type="button" class={styles.pageBtn} data-prev disabled>← Föregående</button>
+            <span class={styles.pageInfo} data-page-info>{pageInfoText}</span>
+            <button type="button" class={styles.pageBtn} data-next disabled={!multiPage}>Nästa →</button>
+          </nav>
+        </div>
 
         <div class={styles.results} data-results>
           {groupsWithStart.map(({ group, startIndex }) => (
@@ -150,8 +168,11 @@ const groupsWithStart = groups.map((group) => {
 </div>
 
 <script>
-  const root = document.querySelector<HTMLElement>('[data-browser]');
-  if (root) {
+  // Re-run on every Astro view-transition navigation, not just first load —
+  // bundled scripts execute once, but astro:page-load fires on each swap.
+  function initBrowser() {
+    const root = document.querySelector<HTMLElement>('[data-browser]');
+    if (!root) return;
     const input = root.querySelector<HTMLInputElement>('[data-search-input]');
     const venueFilter = root.querySelector<HTMLSelectElement>('[data-venue-filter]');
     const dateFrom = root.querySelector<HTMLInputElement>('[data-date-from]');
@@ -159,6 +180,8 @@ const groupsWithStart = groups.map((group) => {
     const pageSizeSel = root.querySelector<HTMLSelectElement>('[data-page-size]');
     const resetBtn = root.querySelector<HTMLButtonElement>('[data-reset]');
     const activeCountEl = root.querySelector<HTMLElement>('[data-active-count]');
+    const sidebarToggle = root.querySelector<HTMLButtonElement>('[data-sidebar-toggle]');
+    const sidebarBody = root.querySelector<HTMLElement>('[data-sidebar-body]');
     const rows = Array.from(root.querySelectorAll<HTMLElement>('[data-results] [data-row]'));
     const groups = Array.from(root.querySelectorAll<HTMLElement>('[data-results] [data-group]'));
     const count = root.querySelector<HTMLElement>('[data-count]');
@@ -246,6 +269,11 @@ const groupsWithStart = groups.map((group) => {
     dateTo?.addEventListener('change', reset);
     pageSizeSel?.addEventListener('change', reset);
     resetBtn?.addEventListener('click', clearFilters);
+    sidebarToggle?.addEventListener('click', () => {
+      const open = sidebarBody?.hasAttribute('data-open') ?? false;
+      sidebarBody?.toggleAttribute('data-open', !open);
+      sidebarToggle.setAttribute('aria-expanded', open ? 'false' : 'true');
+    });
     for (const b of prevBtns) b.addEventListener('click', () => goTo(page - 1));
     for (const b of nextBtns) b.addEventListener('click', () => goTo(page + 1));
 
@@ -256,4 +284,6 @@ const groupsWithStart = groups.map((group) => {
 
     render();
   }
+
+  document.addEventListener('astro:page-load', initBrowser);
 </script>

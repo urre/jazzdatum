@@ -54,6 +54,10 @@
   color: var(--color-accent);
 }
 
+.trigger:active {
+  transform: translateY(1px);
+}
+
 .menu {
   position: absolute;
   right: 0;
