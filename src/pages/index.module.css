@@ -9,6 +9,15 @@
   margin-bottom: var(--space-4);
 }
 
+.hero h1 a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.hero h1 a:hover {
+  text-decoration: underline;
+}
+
 .section {
   margin: var(--space-12) 0;
 }

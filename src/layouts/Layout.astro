@@ -15,13 +15,13 @@ interface Props {
 
 const {
   title,
-  description = 'Jazzdatum.se samlar kommande jazzkonserter från spelställen runt om i Sverige.',
+  description = 'Jazzkonserter.se samlar kommande jazzkonserter från spelställen runt om i Sverige.',
   image = '/og.png',
   ogType = 'website',
   jsonLd,
 } = Astro.props;
 
-const siteName = 'Jazzdatum.se';
+const siteName = 'Jazzkonserter.se';
 const fullTitle = title === siteName ? title : `${title} – ${siteName}`;
 const site = Astro.site ?? Astro.url;
 const canonical = new URL(Astro.url.pathname, site);
@@ -53,6 +53,9 @@ const schemas = [websiteSchema, orgSchema, ...pageSchemas];
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#2f6fe0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="apple-mobile-web-app-title" content="Jazzkonserter" />
     <link rel="preload" href="/fonts/Figtree-Bold.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/Figtree-Regular.woff2" as="font" type="font/woff2" crossorigin />
     <title>{fullTitle}</title>
@@ -70,7 +73,7 @@ const schemas = [websiteSchema, orgSchema, ...pageSchemas];
     <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Jazzdatum.se – jazzkonserter i Sverige" />
+    <meta property="og:image:alt" content="Jazzkonserter.se – jazzkonserter i Sverige" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />

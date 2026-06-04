@@ -4,10 +4,10 @@ import { getUpcomingConcerts, formatDate } from '../lib/concerts';
 
 export async function GET(context: APIContext) {
   const upcoming = await getUpcomingConcerts();
-  const site = context.site ?? new URL('https://jazzdatum.se');
+  const site = context.site ?? new URL('https://jazzkonserter.se');
 
   return rss({
-    title: 'Jazzdatum.se – kommande jazzkonserter',
+    title: 'Jazzkonserter.se – kommande jazzkonserter',
     description: 'Kommande jazzkonserter på spelställen runt om i Sverige.',
     site,
     items: upcoming.map((concert) => ({

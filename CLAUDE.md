@@ -1,8 +1,8 @@
-# Jazzdatum.se - Claude Project Context
+# Jazzkonserter.se - Claude Project Context
 
 ## Project Overview
 
-Jazzdatum.se is an Astro-based website that aggregates and presents jazz concerts from venues across Sweden. The site uses Astro's content collections with MDX for concert data storage and presentation.
+Jazzkonserter.se is an Astro-based website that aggregates and presents jazz concerts from venues across Sweden. The site uses Astro's content collections with MDX for concert data storage and presentation.
 
 ## Tech Stack
 

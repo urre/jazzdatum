@@ -1,4 +1,4 @@
-# 🎷 Jazzdatum.se
+# 🎷 Jazzkonserter.se
 
 An [Astro](https://astro.build) site that aggregates and presents jazz concerts
 from venues across Sweden. Concert data lives as MDX files in an Astro content
