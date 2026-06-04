@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// add-concerts.mjs — deterministic MDX writer + deduper for jazzdatum.se
+// add-concerts.mjs — deterministic MDX writer + deduper for jazzkonserter.se
 //
 // Reads an array of concert objects as JSON (from --file, --json, or stdin),
 // validates them against the content schema, generates slugged MDX files, and

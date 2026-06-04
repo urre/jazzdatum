@@ -40,80 +40,114 @@ const groupsWithStart = groups.map((group) => {
 });
 ---
 
-{concerts.length === 0 ? (
-  <p class={styles.empty}>Inga kommande konserter just nu. Kolla tillbaka snart!</p>
-) : (
-  <div data-browser>
-    <div class={styles.controls}>
+<div data-browser class={styles.browser}>
+  <aside class={styles.sidebar}>
+    <div class={styles.sidebarHead}>
+      <div>
+        <p class={styles.sidebarTitle}>Filter</p>
+        <p class={styles.activeCount} data-active-count aria-live="polite">Inga aktiva</p>
+      </div>
+      <button type="button" class={styles.reset} data-reset>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 12a9 9 0 1 0 3-6.7L3 8" /><path d="M3 3v5h5" />
+        </svg>
+        Rensa
+      </button>
+    </div>
+
+    <div class={styles.field}>
+      <label class={styles.fieldLabel} for="cb-search">Sök</label>
       <div class={styles.searchField}>
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <circle cx="11" cy="11" r="7" /><path d="M21 21l-4.3-4.3" />
         </svg>
         <input
+          id="cb-search"
           type="search"
           class={styles.search}
           data-search-input
-          placeholder="Sök artist eller spelställe…"
+          placeholder="Artist eller spelställe…"
           aria-label="Sök konserter"
         />
       </div>
+    </div>
 
-      {venues.length > 1 && (
-        <select class={styles.select} data-venue-filter aria-label="Filtrera på spelställe">
+    {venues.length > 1 && (
+      <div class={styles.field}>
+        <label class={styles.fieldLabel} for="cb-venue">Spelställe</label>
+        <select id="cb-venue" class={styles.select} data-venue-filter>
           <option value="">Alla spelställen</option>
           {venues.map((v) => <option value={v}>{v}</option>)}
         </select>
-      )}
+      </div>
+    )}
 
-      <input type="date" class={styles.select} data-date-from min={minDate} max={maxDate} aria-label="Från datum" />
-      <input type="date" class={styles.select} data-date-to min={minDate} max={maxDate} aria-label="Till datum" />
+    <div class={styles.field}>
+      <span class={styles.fieldLabel}>Datum</span>
+      <div class={styles.dateRow}>
+        <input type="date" class={styles.select} data-date-from min={minDate} max={maxDate} aria-label="Från datum" />
+        <input type="date" class={styles.select} data-date-to min={minDate} max={maxDate} aria-label="Till datum" />
+      </div>
+    </div>
 
-      <select class={styles.select} data-page-size aria-label="Antal per sida">
+    <div class={styles.field}>
+      <label class={styles.fieldLabel} for="cb-size">Visa</label>
+      <select id="cb-size" class={styles.select} data-page-size>
         <option value="25">25 per sida</option>
         <option value="50">50 per sida</option>
         <option value="100">100 per sida</option>
         <option value="all">Visa alla</option>
       </select>
     </div>
+  </aside>
 
-    <p class={styles.count} data-count aria-live="polite">{initialCount}</p>
+  <div class={styles.main}>
+    <slot />
 
-    <nav class:list={[styles.pagination, styles.paginationTop]} data-pagination aria-label="Sidnavigering (topp)" hidden={!multiPage}>
-      <button type="button" class={styles.pageBtn} data-prev disabled>← Föregående</button>
-      <span class={styles.pageInfo} data-page-info>{pageInfoText}</span>
-      <button type="button" class={styles.pageBtn} data-next disabled={!multiPage}>Nästa →</button>
-    </nav>
+    {total === 0 ? (
+      <p class={styles.empty}>Inga kommande konserter just nu. Kolla tillbaka snart!</p>
+    ) : (
+      <>
+        <p class={styles.count} data-count aria-live="polite">{initialCount}</p>
 
-    <div class={styles.results} data-results>
-      {groupsWithStart.map(({ group, startIndex }) => (
-        <section class={styles.group} data-group hidden={startIndex >= PAGE_SIZE}>
-          <h2 class={styles.dateHeading} data-group-date>{group.label}</h2>
-          <ul class={styles.list}>
-            {group.concerts.map((concert, i) => (
-              <li
-                data-row
-                data-search={searchText(concert)}
-                data-venue={concert.data.venue}
-                data-date={iso(concert.data.date)}
-                hidden={startIndex + i >= PAGE_SIZE}
-              >
-                <ConcertRow concert={concert} />
-              </li>
-            ))}
-          </ul>
-        </section>
-      ))}
-    </div>
+        <nav class:list={[styles.pagination, styles.paginationTop]} data-pagination aria-label="Sidnavigering (topp)" hidden={!multiPage}>
+          <button type="button" class={styles.pageBtn} data-prev disabled>← Föregående</button>
+          <span class={styles.pageInfo} data-page-info>{pageInfoText}</span>
+          <button type="button" class={styles.pageBtn} data-next disabled={!multiPage}>Nästa →</button>
+        </nav>
 
-    <p class={styles.noResults} data-no-results>Inga konserter matchar din filtrering.</p>
+        <div class={styles.results} data-results>
+          {groupsWithStart.map(({ group, startIndex }) => (
+            <section class={styles.group} data-group hidden={startIndex >= PAGE_SIZE}>
+              <h2 class={styles.dateHeading} data-group-date>{group.label}</h2>
+              <ul class={styles.list}>
+                {group.concerts.map((concert, i) => (
+                  <li
+                    data-row
+                    data-search={searchText(concert)}
+                    data-venue={concert.data.venue}
+                    data-date={iso(concert.data.date)}
+                    hidden={startIndex + i >= PAGE_SIZE}
+                  >
+                    <ConcertRow concert={concert} />
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
+        </div>
 
-    <nav class={styles.pagination} data-pagination aria-label="Sidnavigering" hidden={!multiPage}>
-      <button type="button" class={styles.pageBtn} data-prev disabled>← Föregående</button>
-      <span class={styles.pageInfo} data-page-info>{pageInfoText}</span>
-      <button type="button" class={styles.pageBtn} data-next disabled={!multiPage}>Nästa →</button>
-    </nav>
+        <p class={styles.noResults} data-no-results>Inga konserter matchar din filtrering.</p>
+
+        <nav class={styles.pagination} data-pagination aria-label="Sidnavigering" hidden={!multiPage}>
+          <button type="button" class={styles.pageBtn} data-prev disabled>← Föregående</button>
+          <span class={styles.pageInfo} data-page-info>{pageInfoText}</span>
+          <button type="button" class={styles.pageBtn} data-next disabled={!multiPage}>Nästa →</button>
+        </nav>
+      </>
+    )}
   </div>
-)}
+</div>
 
 <script>
   const root = document.querySelector<HTMLElement>('[data-browser]');
@@ -123,6 +157,8 @@ const groupsWithStart = groups.map((group) => {
     const dateFrom = root.querySelector<HTMLInputElement>('[data-date-from]');
     const dateTo = root.querySelector<HTMLInputElement>('[data-date-to]');
     const pageSizeSel = root.querySelector<HTMLSelectElement>('[data-page-size]');
+    const resetBtn = root.querySelector<HTMLButtonElement>('[data-reset]');
+    const activeCountEl = root.querySelector<HTMLElement>('[data-active-count]');
     const rows = Array.from(root.querySelectorAll<HTMLElement>('[data-results] [data-row]'));
     const groups = Array.from(root.querySelectorAll<HTMLElement>('[data-results] [data-group]'));
     const count = root.querySelector<HTMLElement>('[data-count]');
@@ -147,6 +183,15 @@ const groupsWithStart = groups.map((group) => {
         (!from || date >= from) &&
         (!to || date <= to)
       );
+    }
+
+    function activeFilters() {
+      let n = 0;
+      if ((input?.value ?? '').trim()) n++;
+      if (venueFilter?.value) n++;
+      if (dateFrom?.value) n++;
+      if (dateTo?.value) n++;
+      return n;
     }
 
     function render() {
@@ -174,6 +219,11 @@ const groupsWithStart = groups.map((group) => {
       for (const b of nextBtns) b.disabled = page >= pageCount;
       for (const nav of paginations) nav.hidden = pageCount <= 1;
       if (noResults) noResults.style.display = total === 0 ? 'block' : 'none';
+
+      if (activeCountEl) {
+        const a = activeFilters();
+        activeCountEl.textContent = a === 0 ? 'Inga aktiva' : `${a} aktiva`;
+      }
     }
 
     function reset() {
@@ -181,9 +231,13 @@ const groupsWithStart = groups.map((group) => {
       render();
     }
 
-    function goTo(p: number) {
-      page = p;
-      render();
+    function clearFilters() {
+      if (input) input.value = '';
+      if (venueFilter) venueFilter.value = '';
+      if (dateFrom) dateFrom.value = '';
+      if (dateTo) dateTo.value = '';
+      if (pageSizeSel) pageSizeSel.value = '25';
+      reset();
     }
 
     input?.addEventListener('input', reset);
@@ -191,8 +245,14 @@ const groupsWithStart = groups.map((group) => {
     dateFrom?.addEventListener('change', reset);
     dateTo?.addEventListener('change', reset);
     pageSizeSel?.addEventListener('change', reset);
+    resetBtn?.addEventListener('click', clearFilters);
     for (const b of prevBtns) b.addEventListener('click', () => goTo(page - 1));
     for (const b of nextBtns) b.addEventListener('click', () => goTo(page + 1));
+
+    function goTo(p: number) {
+      page = p;
+      render();
+    }
 
     render();
   }

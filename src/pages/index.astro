@@ -23,13 +23,9 @@ const itemListSchema = {
 ---
 
 <Layout title="Jazzkonserter.se" jsonLd={itemListSchema}>
-  <section class={styles.hero}>
-    <h1><a href="/">Jazzkonserter</a></h1>
-  </section>
-
-  <section class={styles.section}>
-    <ConcertBrowser concerts={upcoming} />
-  </section>
+  <ConcertBrowser concerts={upcoming}>
+    <h1 class={styles.pageTitle}><a href="/">Jazzkonserter</a></h1>
+  </ConcertBrowser>
 
   <section class={styles.about}>
     <h2>Om Jazzkonserter.se</h2>

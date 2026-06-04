@@ -3,9 +3,9 @@ name: jazz-concert-scraper
 description: >-
   Collect upcoming jazz concerts from Swedish venue websites (Glenn Miller Café,
   Nefertiti, Fasching, Konserthuset, Svensk Jazz, Vara Konserthus, Digga
-  Göteborg) and save them as MDX content for jazzdatum.se. Use when the user
+  Göteborg) and save them as MDX content for jazzkonserter.se. Use when the user
   asks to scrape, collect, fetch, or update jazz concerts / concert dates, or
-  to add concerts to jazzdatum.se. Triggers: "scrape concerts", "update
+  to add concerts to jazzkonserter.se. Triggers: "scrape concerts", "update
   concerts", "fetch jazz dates", "collect concert data", "check for new jazz
   concerts".
 allowed-tools: WebFetch, WebSearch, Read, Write, Glob, Bash
@@ -14,7 +14,7 @@ allowed-tools: WebFetch, WebSearch, Read, Write, Glob, Bash
 # Jazz Concert Scraper
 
 Fetch upcoming jazz concerts from Swedish venues and write them as validated MDX
-files into `jazzdatum.se/src/content/concerts/`. A deterministic helper script
+files into `jazzkonserter.se/src/content/concerts/`. A deterministic helper script
 (`scripts/add-concerts.mjs`) does the slugging, frontmatter formatting, schema
 validation, and deduplication — your job is to **fetch and extract structured
 data**, then hand it to the script.
@@ -22,7 +22,7 @@ data**, then hand it to the script.
 ## Target project
 
 ```
-/Users/urbansanden/projects/Current/jazzdatum.se/src/content/concerts/
+/Users/urbansanden/projects/Current/jazzkonserter.se/src/content/concerts/
 ```
 
 This is the helper script's default `--content-dir`. Override with
@@ -140,7 +140,7 @@ content. If a fetch comes back empty or obviously incomplete:
 
 ## Schema reference
 
-Files validate against `jazzdatum.se/src/content.config.ts`:
+Files validate against `jazzkonserter.se/src/content.config.ts`:
 
 | Field | Type | Required |
 |-------|------|----------|
@@ -171,7 +171,7 @@ Swedish characters transliterated: å/ä→a, ö→o, é→e). Example:
 After writing, optionally confirm the site still builds:
 
 ```bash
-cd /Users/urbansanden/projects/Current/jazzdatum.se && npm run build
+cd /Users/urbansanden/projects/Current/jazzkonserter.se && npm run build
 ```
 
 ## Recommended cadence

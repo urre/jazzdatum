@@ -16,7 +16,7 @@ Jazzkonserter.se is an Astro-based website that aggregates and presents jazz con
 ## Project Structure
 
 ```
-jazzdatum.se/
+jazzkonserter.se/
 ├── src/
 │   ├── components/
 │   │   ├── ConcertCard.astro       # Reusable concert card (full + compact)
