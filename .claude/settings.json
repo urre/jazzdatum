@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:glennmillercafe.se)",
+      "WebFetch(domain:www.glennmillercafe.se)",
+      "WebFetch(domain:nefertiti.se)",
+      "WebFetch(domain:www.nefertiti.se)",
+      "WebFetch(domain:fasching.se)",
+      "WebFetch(domain:www.fasching.se)",
+      "WebFetch(domain:konserthuset.se)",
+      "WebFetch(domain:www.konserthuset.se)",
+      "WebFetch(domain:biljetter.konserthuset.se)",
+      "WebFetch(domain:svenskjazz.se)",
+      "WebFetch(domain:varakonserthus.se)",
+      "WebFetch(domain:www.varakonserthus.se)",
+      "WebFetch(domain:digga.se)",
+      "WebFetch(domain:nortic.se)",
+      "WebFetch(domain:www.nortic.se)",
+      "WebFetch(domain:secure.tickster.com)",
+      "WebFetch(domain:stockholmjazz.se)",
+      "WebFetch(domain:www.stockholmjazz.se)",
+      "WebFetch(domain:gso.se)",
+      "WebFetch(domain:www.gso.se)",
+      "WebFetch(domain:unityjazz.se)",
+      "WebFetch(domain:www.unityjazz.se)",
+      "WebFetch(domain:playhouse.nu)",
+      "WebFetch(domain:www.playhouse.nu)",
+      "WebFetch(domain:ystadjazz.se)",
+      "WebFetch(domain:www.ystadjazz.se)",
+      "WebFetch(domain:umeajazzfestival.se)",
+      "WebFetch(domain:www.umeajazzfestival.se)",
+      "WebFetch(domain:biljettcentrum.com)",
+      "WebFetch(domain:www.biljettcentrum.com)",
+      "WebFetch(domain:tickster.com)",
+      "WebFetch(domain:www.tickster.com)",
+      "WebFetch(domain:malmolive.se)",
+      "WebFetch(domain:www.malmolive.se)",
+      "WebFetch(domain:biljetter.malmolive.se)"
+    ]
+  }
+}

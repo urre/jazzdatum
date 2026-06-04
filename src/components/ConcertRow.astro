@@ -1,0 +1,30 @@
+---
+import type { Concert } from '../lib/concerts';
+import { venueColor, venueTextColor } from '../lib/venueColor';
+import styles from './ConcertRow.module.css';
+
+interface Props {
+  concert: Concert;
+}
+
+const { concert } = Astro.props;
+const { data, id } = concert;
+
+const vc = venueColor(data.venue);
+const venueText = venueTextColor(vc);
+---
+
+<a class={styles.row} href={`/concerts/${id}`}>
+  <span class={styles.venue} style={`background:${vc};color:${venueText}`}>{data.venue}</span>
+
+  <span class={styles.main}>
+    <span class={styles.artist}>{data.artist}</span>
+    {data.time && <span class={styles.time}>{data.time}</span>}
+  </span>
+
+  <span class={styles.right}>
+    <svg class={styles.chevron} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M9 6l6 6-6 6" />
+    </svg>
+  </span>
+</a>

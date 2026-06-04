@@ -1,0 +1,84 @@
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-3);
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.12s ease, transform 0.12s ease;
+}
+
+.row:hover {
+  background: var(--color-bg-purple);
+  transform: translateX(2px);
+}
+
+/* Colour-coded venue tag — the scannable element */
+.venue {
+  flex-shrink: 0;
+  width: 168px;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-pill);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+}
+
+.artist {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color-ink);
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.time {
+  font-size: 0.9rem;
+  color: var(--color-muted);
+  flex-shrink: 0;
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.chevron {
+  width: 18px;
+  height: 18px;
+  color: var(--color-muted);
+  flex-shrink: 0;
+}
+
+.row:hover .chevron {
+  color: var(--color-accent);
+}
+
+@media (max-width: 600px) {
+  .row {
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-3);
+  }
+  .venue {
+    width: auto;
+    order: -1;
+  }
+}

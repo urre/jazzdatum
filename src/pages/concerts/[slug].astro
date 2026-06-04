@@ -1,0 +1,102 @@
+---
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import { formatDate } from '../../lib/concerts';
+import { venueColor, venueTextColor, venueTint } from '../../lib/venueColor';
+import styles from './detail.module.css';
+
+export async function getStaticPaths() {
+  const concerts = await getCollection('concerts');
+  return concerts.map((concert) => ({
+    params: { slug: concert.id },
+    props: { concert },
+  }));
+}
+
+const { concert } = Astro.props;
+const { data } = concert;
+const { Content } = await render(concert);
+
+const vc = venueColor(data.venue);
+const vcText = venueTextColor(vc);
+const vcTint = venueTint(vc);
+const hasBody = (concert.body ?? '').trim().length > 0;
+const showTitle = data.title && data.title !== data.artist;
+
+const metaDescription =
+  data.description ?? `${data.artist} på ${data.venue}, ${formatDate(data.date)}.`;
+---
+
+<Layout
+  title={`${data.artist} – ${data.venue}`}
+  description={metaDescription}
+  image={data.image}
+  ogType="article"
+>
+  <article class={styles.wrap} style={`--vc:${vc};--vc-text:${vcText};--vc-tint:${vcTint}`}>
+    <a class={styles.back} href="/">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M15 6l-6 6 6 6" />
+      </svg>
+      Alla konserter
+    </a>
+
+    <header class={styles.hero}>
+      <div class={styles.heroHead}>
+        {data.venueUrl ? (
+          <a class={styles.venue} href={data.venueUrl} target="_blank" rel="noopener">{data.venue}</a>
+        ) : (
+          <span class={styles.venue}>{data.venue}</span>
+        )}
+      </div>
+
+      <h1 class={styles.artist}>{data.artist}</h1>
+      {showTitle && <p class={styles.title}>{data.title}</p>}
+
+      <dl class={styles.facts}>
+        <div class={styles.fact}>
+          <dt>Datum</dt>
+          <dd>{formatDate(data.date)}</dd>
+        </div>
+        {data.time && (
+          <div class={styles.fact}>
+            <dt>Tid</dt>
+            <dd>{data.time}</dd>
+          </div>
+        )}
+        {data.price && (
+          <div class={styles.fact}>
+            <dt>Pris</dt>
+            <dd>{data.price}</dd>
+          </div>
+        )}
+        {data.genre.length > 0 && (
+          <div class={styles.fact}>
+            <dt>Genre</dt>
+            <dd>{data.genre.join(', ')}</dd>
+          </div>
+        )}
+      </dl>
+
+      {data.ticketUrl && (
+        <a class={styles.cta} href={data.ticketUrl} target="_blank" rel="noopener">
+          Köp biljetter
+        </a>
+      )}
+    </header>
+
+    {hasBody && (
+      <div class={styles.content}>
+        <Content />
+      </div>
+    )}
+
+    {data.sourceUrl && (
+      <p class={styles.source}>
+        Källa: <a href={data.sourceUrl} target="_blank" rel="noopener">
+          {new URL(data.sourceUrl).hostname}
+        </a>
+      </p>
+    )}
+  </article>
+</Layout>

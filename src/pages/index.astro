@@ -1,0 +1,29 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ConcertBrowser from '../components/ConcertBrowser.astro';
+import { getUpcomingConcerts } from '../lib/concerts';
+import styles from './index.module.css';
+
+const upcoming = await getUpcomingConcerts();
+---
+
+<Layout title="Jazzdatum.se">
+  <section class={styles.hero}>
+    <p class={styles.eyebrow}>Nya konserter varje vecka</p>
+    <h1>Jazzkonserter i <span class="accent">Sverige</span></h1>
+    <p class={styles.lead}>Din samlade guide till jazzscenen – från Fasching och Nefertiti till Glenn Miller Café och Vara Konserthus.</p>
+  </section>
+
+  <section class={styles.section}>
+    <ConcertBrowser concerts={upcoming} />
+  </section>
+
+  <section class={styles.about}>
+    <h2>Om Jazzdatum.se</h2>
+    <p>
+      Jazzdatum.se samlar jazzkonserter från de bästa spelställena i Sverige. Vi bevakar scener som
+      Nefertiti, Fasching, Glenn Miller Café, Konserthuset och många fler för att ge dig en komplett
+      översikt av jazzscenen – på ett ställe.
+    </p>
+  </section>
+</Layout>

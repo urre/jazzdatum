@@ -1,0 +1,134 @@
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: center;
+  margin-bottom: var(--space-3);
+}
+
+.searchField {
+  position: relative;
+  flex: 1;
+  min-width: 220px;
+}
+
+.searchField svg {
+  position: absolute;
+  left: var(--space-4);
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  color: var(--color-accent);
+  pointer-events: none;
+}
+
+.search,
+.select {
+  font: inherit;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  box-shadow: var(--shadow-sm);
+}
+
+.search {
+  width: 100%;
+  padding: var(--space-3) var(--space-4) var(--space-3) 2.75rem;
+}
+
+.select {
+  padding: var(--space-3) var(--space-4);
+}
+
+.search:focus,
+.select:focus {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
+}
+
+.count {
+  font-size: 0.9rem;
+  color: var(--color-muted);
+  font-weight: 600;
+  margin-bottom: var(--space-4);
+}
+
+.results {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-4) var(--space-6) var(--space-6);
+}
+
+.group {
+  margin-bottom: var(--space-2);
+}
+
+.dateHeading {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-ink);
+  margin: var(--space-6) 0 var(--space-2);
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.empty,
+.noResults {
+  color: var(--color-muted);
+  background: var(--color-surface);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius);
+  padding: var(--space-8);
+  text-align: center;
+}
+
+.noResults {
+  display: none;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  margin-top: var(--space-6);
+}
+
+.pageBtn {
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  background: var(--color-surface);
+  color: var(--color-ink);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  padding: var(--space-2) var(--space-4);
+  box-shadow: var(--shadow-sm);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.pageBtn:hover:not(:disabled) {
+  background: var(--color-bg-purple);
+  color: var(--color-accent);
+}
+
+.pageBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pageInfo {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-muted);
+  min-width: 7ch;
+  text-align: center;
+}

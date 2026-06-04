@@ -1,0 +1,176 @@
+---
+import type { Concert } from '../lib/concerts';
+import { groupByDate, uniqueVenues } from '../lib/concerts';
+import ConcertRow from './ConcertRow.astro';
+import styles from './ConcertBrowser.module.css';
+
+interface Props {
+  concerts: Concert[];
+}
+
+const { concerts } = Astro.props;
+const venues = uniqueVenues(concerts);
+const groups = groupByDate(concerts);
+
+const iso = (d: Date) =>
+  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
+const dates = concerts.map((c) => c.data.date).sort((a, b) => a.getTime() - b.getTime());
+const minDate = dates.length ? iso(dates[0]) : undefined;
+const maxDate = dates.length ? iso(dates[dates.length - 1]) : undefined;
+
+const searchText = (c: Concert) =>
+  [c.data.artist, c.data.venue, c.data.title].join(' ').toLowerCase();
+---
+
+{concerts.length === 0 ? (
+  <p class={styles.empty}>Inga kommande konserter just nu. Kolla tillbaka snart!</p>
+) : (
+  <div data-browser>
+    <div class={styles.controls}>
+      <div class={styles.searchField}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="7" /><path d="M21 21l-4.3-4.3" />
+        </svg>
+        <input
+          type="search"
+          class={styles.search}
+          data-search-input
+          placeholder="Sök artist eller spelställe…"
+          aria-label="Sök konserter"
+        />
+      </div>
+
+      {venues.length > 1 && (
+        <select class={styles.select} data-venue-filter aria-label="Filtrera på spelställe">
+          <option value="">Alla spelställen</option>
+          {venues.map((v) => <option value={v}>{v}</option>)}
+        </select>
+      )}
+
+      <input type="date" class={styles.select} data-date-from min={minDate} max={maxDate} aria-label="Från datum" />
+      <input type="date" class={styles.select} data-date-to min={minDate} max={maxDate} aria-label="Till datum" />
+
+      <select class={styles.select} data-page-size aria-label="Antal per sida">
+        <option value="25">25 per sida</option>
+        <option value="50">50 per sida</option>
+        <option value="100">100 per sida</option>
+        <option value="all">Visa alla</option>
+      </select>
+    </div>
+
+    <p class={styles.count} data-count></p>
+
+    <div class={styles.results} data-results>
+      {groups.map((group) => (
+        <section class={styles.group} data-group>
+          <h2 class={styles.dateHeading} data-group-date>{group.label}</h2>
+          <ul class={styles.list}>
+            {group.concerts.map((concert) => (
+              <li
+                data-row
+                data-search={searchText(concert)}
+                data-venue={concert.data.venue}
+                data-date={iso(concert.data.date)}
+              >
+                <ConcertRow concert={concert} />
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
+    </div>
+
+    <p class={styles.noResults} data-no-results>Inga konserter matchar din filtrering.</p>
+
+    <nav class={styles.pagination} data-pagination aria-label="Sidnavigering" hidden>
+      <button type="button" class={styles.pageBtn} data-prev>← Föregående</button>
+      <span class={styles.pageInfo} data-page-info></span>
+      <button type="button" class={styles.pageBtn} data-next>Nästa →</button>
+    </nav>
+  </div>
+)}
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-browser]');
+  if (root) {
+    const input = root.querySelector<HTMLInputElement>('[data-search-input]');
+    const venueFilter = root.querySelector<HTMLSelectElement>('[data-venue-filter]');
+    const dateFrom = root.querySelector<HTMLInputElement>('[data-date-from]');
+    const dateTo = root.querySelector<HTMLInputElement>('[data-date-to]');
+    const pageSizeSel = root.querySelector<HTMLSelectElement>('[data-page-size]');
+    const rows = Array.from(root.querySelectorAll<HTMLElement>('[data-results] [data-row]'));
+    const groups = Array.from(root.querySelectorAll<HTMLElement>('[data-results] [data-group]'));
+    const results = root.querySelector<HTMLElement>('[data-results]');
+    const count = root.querySelector<HTMLElement>('[data-count]');
+    const noResults = root.querySelector<HTMLElement>('[data-no-results]');
+    const pagination = root.querySelector<HTMLElement>('[data-pagination]');
+    const pageInfo = root.querySelector<HTMLElement>('[data-page-info]');
+    const prevBtn = root.querySelector<HTMLButtonElement>('[data-prev]');
+    const nextBtn = root.querySelector<HTMLButtonElement>('[data-next]');
+
+    let page = 1;
+
+    function matches(row: HTMLElement) {
+      const q = (input?.value ?? '').trim().toLowerCase();
+      const venue = venueFilter?.value ?? '';
+      const from = dateFrom?.value ?? '';
+      const to = dateTo?.value ?? '';
+      const date = row.dataset.date ?? '';
+      return (
+        (!q || (row.dataset.search ?? '').includes(q)) &&
+        (!venue || row.dataset.venue === venue) &&
+        (!from || date >= from) &&
+        (!to || date <= to)
+      );
+    }
+
+    function render() {
+      const matched = rows.filter(matches);
+      const total = matched.length;
+      const raw = pageSizeSel?.value ?? '25';
+      const size = raw === 'all' ? Math.max(total, 1) : parseInt(raw, 10);
+      const pageCount = Math.max(1, Math.ceil(total / size));
+      if (page > pageCount) page = pageCount;
+      if (page < 1) page = 1;
+      const start = (page - 1) * size;
+      const end = start + size;
+      const shown = new Set(matched.slice(start, end));
+
+      for (const row of rows) row.hidden = !shown.has(row);
+      for (const g of groups) g.hidden = !g.querySelector('[data-row]:not([hidden])');
+
+      if (count) {
+        count.textContent = total === 0
+          ? '0 konserter'
+          : `Visar ${start + 1}–${Math.min(end, total)} av ${total} konserter`;
+      }
+      if (pageInfo) pageInfo.textContent = `Sida ${page} / ${pageCount}`;
+      if (prevBtn) prevBtn.disabled = page <= 1;
+      if (nextBtn) nextBtn.disabled = page >= pageCount;
+      if (pagination) pagination.hidden = pageCount <= 1;
+      if (noResults) noResults.style.display = total === 0 ? 'block' : 'none';
+    }
+
+    function reset() {
+      page = 1;
+      render();
+    }
+
+    function goTo(p: number) {
+      page = p;
+      render();
+      results?.scrollIntoView({ block: 'start' });
+    }
+
+    input?.addEventListener('input', reset);
+    venueFilter?.addEventListener('change', reset);
+    dateFrom?.addEventListener('change', reset);
+    dateTo?.addEventListener('change', reset);
+    pageSizeSel?.addEventListener('change', reset);
+    prevBtn?.addEventListener('click', () => goTo(page - 1));
+    nextBtn?.addEventListener('click', () => goTo(page + 1));
+
+    render();
+  }
+</script>

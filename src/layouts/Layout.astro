@@ -1,0 +1,61 @@
+---
+import '../styles/global.css';
+import styles from './Layout.module.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  /** Open Graph image (absolute or root-relative path). */
+  image?: string;
+  /** Override the OG type, e.g. "article" for concert pages. */
+  ogType?: string;
+}
+
+const {
+  title,
+  description = 'Jazzdatum.se samlar kommande jazzkonserter från spelställen runt om i Sverige.',
+  image = '/favicon.svg',
+  ogType = 'website',
+} = Astro.props;
+
+const siteName = 'Jazzdatum.se';
+const fullTitle = title === siteName ? title : `${title} – ${siteName}`;
+const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url);
+const ogImage = new URL(image, Astro.site ?? Astro.url);
+---
+
+<!doctype html>
+<html lang="sv">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preload" href="/fonts/GoogleSans-Bold.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/GoogleSans-Regular.woff2" as="font" type="font/woff2" crossorigin />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" type="application/rss+xml" title={`${siteName} – kommande konserter`} href="/rss.xml" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+  </head>
+  <body>
+    <main class={styles.main}>
+      <div class="container">
+        <slot />
+      </div>
+    </main>
+  </body>
+</html>
