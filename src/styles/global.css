@@ -197,6 +197,99 @@ button:active,
   border: 0;
 }
 
+/* ---------------------------------------------------------------------------
+   Customizable <select> — progressive enhancement (Chrome 135+).
+   Opting in with `appearance: base-select` makes the control and its dropdown
+   fully styleable so the filters match the rest of the UI. Browsers without
+   support ignore these rules and keep the native select (which still gets the
+   border/radius/background from .select). Date inputs share .select but are
+   <input>, so the element-scoped `select` rules below leave them untouched.
+   https://developer.chrome.com/blog/a-customizable-select
+--------------------------------------------------------------------------- */
+[data-browser] select,
+[data-browser] select::picker(select) {
+  appearance: base-select;
+}
+
+[data-browser] select {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+[data-browser] select:hover {
+  border-color: var(--color-accent);
+}
+
+[data-browser] select:open {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-soft);
+}
+
+/* The dropdown arrow */
+[data-browser] select::picker-icon {
+  margin-left: auto;
+  color: var(--color-accent);
+  transition: transform 0.2s ease;
+}
+
+[data-browser] select:open::picker-icon {
+  transform: rotate(180deg);
+}
+
+/* The popup, rendered in the top layer — animate it in/out */
+::picker(select) {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  box-shadow: var(--shadow);
+  padding: var(--space-2);
+  margin-top: var(--space-2);
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity 0.18s ease, transform 0.18s ease,
+    overlay 0.18s allow-discrete, display 0.18s allow-discrete;
+}
+
+::picker(select):popover-open {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@starting-style {
+  ::picker(select):popover-open {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+[data-browser] select option {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+[data-browser] select option:hover,
+[data-browser] select option:focus {
+  background: var(--color-bg-grey);
+  color: var(--color-accent);
+  outline: none;
+}
+
+[data-browser] select option:checked {
+  font-weight: 600;
+}
+
+[data-browser] select option::checkmark {
+  order: 1;
+  margin-left: auto;
+  color: var(--color-accent);
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     scroll-behavior: auto !important;
