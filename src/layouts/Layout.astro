@@ -48,6 +48,9 @@ const orgSchema = {
 };
 const pageSchemas = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
 const schemas = [websiteSchema, orgSchema, ...pageSchemas];
+
+// Register the service worker only in production — avoids stale caches in dev.
+const isProd = import.meta.env.PROD;
 ---
 
 <!doctype html>
@@ -57,9 +60,14 @@ const schemas = [websiteSchema, orgSchema, ...pageSchemas];
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#2f6fe0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
     <meta name="apple-mobile-web-app-title" content="Jazzkonserter" />
+    <meta name="application-name" content="Jazzkonserter" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <link rel="preload" href="/fonts/Inter-Bold.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/Inter-Regular.woff2" as="font" type="font/woff2" crossorigin />
     <title>{fullTitle}</title>
@@ -102,5 +110,14 @@ const schemas = [websiteSchema, orgSchema, ...pageSchemas];
         </div>
       )}
     </main>
+    {isProd && (
+      <script is:inline>
+        if ('serviceWorker' in navigator) {
+          window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js').catch(() => {});
+          });
+        }
+      </script>
+    )}
   </body>
 </html>
