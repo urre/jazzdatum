@@ -128,9 +128,9 @@ const groupsWithStart = groups.map((group) => {
           <p class={styles.count} data-count aria-live="polite">{initialCount}</p>
 
           <nav class:list={[styles.pagination, styles.paginationTop]} data-pagination aria-label="Sidnavigering (topp)" hidden={!multiPage}>
-            <button type="button" class={styles.pageBtn} data-prev disabled>← Föregående</button>
+            <button type="button" class={styles.pageBtn} data-prev disabled>← <span class={styles.pageBtnLabel}>Föregående</span></button>
             <span class={styles.pageInfo} data-page-info>{pageInfoText}</span>
-            <button type="button" class={styles.pageBtn} data-next disabled={!multiPage}>Nästa →</button>
+            <button type="button" class={styles.pageBtn} data-next disabled={!multiPage}><span class={styles.pageBtnLabel}>Nästa</span> →</button>
           </nav>
         </div>
 
@@ -158,9 +158,9 @@ const groupsWithStart = groups.map((group) => {
         <p class={styles.noResults} data-no-results>Inga konserter matchar din filtrering.</p>
 
         <nav class={styles.pagination} data-pagination aria-label="Sidnavigering" hidden={!multiPage}>
-          <button type="button" class={styles.pageBtn} data-prev disabled>← Föregående</button>
+          <button type="button" class={styles.pageBtn} data-prev disabled>← <span class={styles.pageBtnLabel}>Föregående</span></button>
           <span class={styles.pageInfo} data-page-info>{pageInfoText}</span>
-          <button type="button" class={styles.pageBtn} data-next disabled={!multiPage}>Nästa →</button>
+          <button type="button" class={styles.pageBtn} data-next disabled={!multiPage}><span class={styles.pageBtnLabel}>Nästa</span> →</button>
         </nav>
       </>
     )}
