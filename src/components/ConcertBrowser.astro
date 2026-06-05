@@ -194,6 +194,11 @@ const groupsWithStart = groups.map((group) => {
 
     let page = 1;
 
+    // "Today" by the viewer's clock — the build-time upcoming filter freezes on
+    // a static site, so we re-floor here so past concerts never show.
+    const now = new Date();
+    const todayIso = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+
     function matches(row: HTMLElement) {
       const q = (input?.value ?? '').trim().toLowerCase();
       const venue = venueFilter?.value ?? '';
@@ -201,6 +206,7 @@ const groupsWithStart = groups.map((group) => {
       const to = dateTo?.value ?? '';
       const date = row.dataset.date ?? '';
       return (
+        date >= todayIso &&
         (!q || (row.dataset.search ?? '').includes(q)) &&
         (!venue || row.dataset.venue === venue) &&
         (!from || date >= from) &&

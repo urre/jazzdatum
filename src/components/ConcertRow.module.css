@@ -107,15 +107,27 @@
 }
 
 @media (max-width: 768px) {
+  /* Stack: venue badge + actions on a top line, then full-width title below.
+     A fixed badge column squeezes long artist names on narrow screens. */
   .row {
     flex-wrap: wrap;
+    align-items: center;
     gap: var(--space-2) var(--space-3);
   }
   .venue {
-    width: 132px;
+    width: auto;
+    max-width: 100%;
+    min-width: 0;
+    flex-shrink: 1;
     order: -1;
   }
+  .right {
+    order: 0;
+    margin-left: auto;
+  }
   .main {
+    order: 1;
+    flex-basis: 100%;
     display: flex;
     flex-direction: column;
     gap: 2px;
