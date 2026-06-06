@@ -15,6 +15,8 @@
 }
 
 :root {
+  color-scheme: light;
+
   /* Base palette — warm cream + deep ink */
   --color-ink: #1f1a2e;
   --color-ink-soft: #4a4458;
@@ -63,6 +65,30 @@
   --content-width: 1100px;
 }
 
+/* Dark theme — applied when <html data-theme="dark">. The theme attribute is
+   set by an inline script in <head> before first paint (see Layout.astro), so
+   only the token values flip; every component reads these same variables. */
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  --color-ink: #ece8f5;
+  --color-ink-soft: #b7b1c6;
+  --color-muted: #8b8499;
+  --color-bg: #100e16;
+  --color-bg-grey: #262232;
+  --color-bg-purple: #221c33;
+  --color-bg-pink: #2e1f2a;
+  --color-surface: #181520;
+  --color-border: #2f2940;
+
+  --color-accent: #6d97f0;
+  --color-accent-soft: #233152;
+  --color-accent-ink: #ffffff;
+
+  --shadow-sm: 0 4px 14px rgba(0, 0, 0, 0.4);
+  --shadow: 0 14px 40px rgba(0, 0, 0, 0.55);
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -80,6 +106,7 @@ body {
   color: var(--color-ink);
   background: var(--color-surface);
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 h1,

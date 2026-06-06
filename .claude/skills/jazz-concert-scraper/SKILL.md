@@ -48,6 +48,7 @@ This is the helper script's default `--content-dir`. Override with
 | 14 | Göteborgs Symfoniker (GSO) | https://www.gso.se/program/konserter/?concert_genre%5B0%5D=13 | Program filtered to jazz (genre 13). Venue: "Göteborgs Konserthus". The /gsoplay/ page lacks dates — use this one |
 | 15 | Malmö Live | https://malmolive.se/kommande-jazz-pa-malmo-live-konserthus | Stage (Kuben/Konsertsalen) → description, `venue: "Malmö Live"`; has prices + ticket links |
 | 16 | Tickster (jazz-taggade) | https://www.tickster.com/se/sv/events/tagged/jazz | National platform — many cities/venues. Use the event's real venue; **may overlap other sources, so dedup matters**. Often no times/prices |
+| 17 | Utopia Jazz | https://billetto.se/users/utopia-jazz | Göteborg club (Karl Johansgatan 6). **JS-rendered** Billetto profile — WebFetch returns nothing; render with the browser MCP, or fetch each `/e/…-biljetter-<id>` event page (same-origin) and read its JSON-LD `Event` block for date/time/price/description. `venue: "Utopia Jazz"`, `venueUrl: https://utopiajazz.com` |
 
 ## Workflow
 

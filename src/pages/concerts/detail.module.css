@@ -24,6 +24,10 @@
   background: var(--vc-tint);
 }
 
+:global(html[data-theme='dark']) .main {
+  background: var(--vc-tint-dark);
+}
+
 .wrap {
   width: 100%;
 }
@@ -95,7 +99,7 @@
   gap: var(--space-4) var(--space-8);
   margin: var(--space-6) 0;
   padding-top: var(--space-6);
-  border-top: 1px solid rgba(31, 26, 46, 0.08);
+  border-top: 1px solid var(--color-border);
 }
 
 .fact dt {

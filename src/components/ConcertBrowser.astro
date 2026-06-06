@@ -22,6 +22,11 @@ const maxDate = dates.length ? iso(dates[dates.length - 1]) : undefined;
 const searchText = (c: Concert) =>
   [c.data.artist, c.data.venue, c.data.title].join(' ').toLowerCase();
 
+// Comparable local start "YYYY-MM-DDTHH:MM" used to hide concerts whose start
+// time has already passed today. Concerts without a known time stay visible
+// the whole day (treated as 23:59).
+const startKey = (c: Concert) => `${iso(c.data.date)}T${c.data.time ?? '23:59'}`;
+
 // Server-render the first page already paginated so there's no layout shift
 // when the client script hydrates (it recomputes the same page-1 state).
 const PAGE_SIZE = 25;
@@ -145,6 +150,7 @@ const groupsWithStart = groups.map((group) => {
                     data-search={searchText(concert)}
                     data-venue={concert.data.venue}
                     data-date={iso(concert.data.date)}
+                    data-start={startKey(concert)}
                     hidden={startIndex + i >= PAGE_SIZE}
                   >
                     <ConcertRow concert={concert} />
@@ -194,10 +200,13 @@ const groupsWithStart = groups.map((group) => {
 
     let page = 1;
 
-    // "Today" by the viewer's clock — the build-time upcoming filter freezes on
-    // a static site, so we re-floor here so past concerts never show.
+    // "Now" by the viewer's clock — the build-time upcoming filter freezes on
+    // a static site, so we re-floor here so past concerts never show. We floor
+    // to the current minute (not midnight) so a concert earlier today drops off
+    // once its start time has passed.
     const now = new Date();
-    const todayIso = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    const pad = (n: number) => String(n).padStart(2, '0');
+    const nowLocal = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
 
     function matches(row: HTMLElement) {
       const q = (input?.value ?? '').trim().toLowerCase();
@@ -205,8 +214,11 @@ const groupsWithStart = groups.map((group) => {
       const from = dateFrom?.value ?? '';
       const to = dateTo?.value ?? '';
       const date = row.dataset.date ?? '';
+      // data-start is "YYYY-MM-DDTHH:MM"; same-format string compare against
+      // nowLocal handles both the day and the time in one shot.
+      const start = row.dataset.start ?? `${date}T23:59`;
       return (
-        date >= todayIso &&
+        start >= nowLocal &&
         (!q || (row.dataset.search ?? '').includes(q)) &&
         (!venue || row.dataset.venue === venue) &&
         (!from || date >= from) &&

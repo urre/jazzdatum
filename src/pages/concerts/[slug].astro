@@ -2,7 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import { formatDate } from '../../lib/concerts';
-import { venueColor, venueTextColor, venueTint } from '../../lib/venueColor';
+import { venueColor, venueTextColor, venueTint, venueTintDark } from '../../lib/venueColor';
 import { musicEventSchema } from '../../lib/eventSchema';
 import AddToCalendar from '../../components/AddToCalendar.astro';
 import SiteAbout from '../../components/SiteAbout.astro';
@@ -23,6 +23,7 @@ const { Content } = await render(concert);
 const vc = venueColor(data.venue);
 const vcText = venueTextColor(vc);
 const vcTint = venueTint(vc);
+const vcTintDark = venueTintDark(vc);
 const hasBody = (concert.body ?? '').trim().length > 0;
 const showTitle = data.title && data.title !== data.artist;
 const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(data.venue)}`;
@@ -40,7 +41,7 @@ const metaDescription =
   jsonLd={eventSchema}
   fullWidth
 >
-  <div class={styles.browser} style={`--vc:${vc};--vc-text:${vcText};--vc-tint:${vcTint}`}>
+  <div class={styles.browser} style={`--vc:${vc};--vc-text:${vcText};--vc-tint:${vcTint};--vc-tint-dark:${vcTintDark}`}>
     <aside class={styles.sidebar}>
       <div class={styles.sidebarInner}>
         <a class={styles.back} href="/">

@@ -7,4 +7,49 @@ import styles from './SiteAbout.module.css';
   <p>
     Av <a href="https://urre.me">Urban Sandén</a>. Nya konserter läggs till kontinuerligt. Besök också <a href="https://www.jazztips.se/">Jazztips.se</a>
   </p>
+
+  <button type="button" class={styles.themeToggle} data-theme-toggle aria-pressed="false">
+    <svg class={styles.iconMoon} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+    </svg>
+    <svg class={styles.iconSun} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="4" />
+      <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+    </svg>
+    <span data-theme-label>Mörkt läge</span>
+  </button>
 </section>
+
+<script>
+  function initThemeToggle() {
+    const root = document.documentElement;
+    const btn = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
+    if (!btn) return;
+    const label = btn.querySelector<HTMLElement>('[data-theme-label]');
+    const meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
+
+    // Reflect the current theme on the button (label, pressed state, browser UI).
+    const sync = () => {
+      const dark = root.dataset.theme === 'dark';
+      btn.setAttribute('aria-pressed', String(dark));
+      if (label) label.textContent = dark ? 'Ljust läge' : 'Mörkt läge';
+      if (meta) meta.setAttribute('content', dark ? '#181520' : '#2f6fe0');
+    };
+    sync();
+
+    // The button is re-created on each view-transition swap, so this runs per
+    // page; guard against binding the same element twice.
+    if (btn.dataset.bound) return;
+    btn.dataset.bound = '1';
+    btn.addEventListener('click', () => {
+      const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+      root.dataset.theme = next;
+      try {
+        localStorage.setItem('theme', next);
+      } catch (e) {}
+      sync();
+    });
+  }
+
+  document.addEventListener('astro:page-load', initThemeToggle);
+</script>

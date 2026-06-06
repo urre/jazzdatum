@@ -26,3 +26,13 @@ export function venueTint(hex: string, whiteAmount = 0.9): string {
   const to2 = (n: number) => n.toString(16).padStart(2, '0');
   return `#${to2(mix(ch(1)))}${to2(mix(ch(3)))}${to2(mix(ch(5)))}`;
 }
+
+/** A deep tint for dark backgrounds — mostly the dark surface, a hint of hue. */
+export function venueTintDark(hex: string, darkAmount = 0.84): string {
+  // Mix toward the dark-theme surface (#181520 ≈ 24, 21, 32).
+  const base = [24, 21, 32];
+  const ch = (i: number) => parseInt(hex.slice(i, i + 2), 16);
+  const mix = (c: number, b: number) => Math.round(c + (b - c) * darkAmount);
+  const to2 = (n: number) => n.toString(16).padStart(2, '0');
+  return `#${to2(mix(ch(1), base[0]))}${to2(mix(ch(3), base[1]))}${to2(mix(ch(5), base[2]))}`;
+}

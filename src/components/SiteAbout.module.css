@@ -13,3 +13,43 @@
   color: var(--color-ink-soft);
   font-size: 0.85rem;
 }
+
+.themeToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-ink);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  padding: var(--space-2) var(--space-4);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.themeToggle:hover {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+  background: var(--color-bg-grey);
+}
+
+.themeToggle svg {
+  flex-shrink: 0;
+}
+
+/* Show the moon in light mode (click → dark), the sun in dark mode (click → light). */
+.iconSun {
+  display: none;
+}
+
+:global(html[data-theme='dark']) .iconMoon {
+  display: none;
+}
+
+:global(html[data-theme='dark']) .iconSun {
+  display: block;
+}
