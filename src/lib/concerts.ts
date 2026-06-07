@@ -8,10 +8,21 @@ function startOfToday(): Date {
   return new Date(now.getFullYear(), now.getMonth(), now.getDate());
 }
 
-/** All concerts, oldest → newest. */
+/** Minutes since midnight for an "HH:MM" time; concerts without a time sort last. */
+function timeRank(c: Concert): number {
+  const t = c.data.time;
+  if (!t) return Number.MAX_SAFE_INTEGER;
+  const [h, m] = t.split(':').map(Number);
+  return (h || 0) * 60 + (m || 0);
+}
+
+/** All concerts, oldest → newest; within a day, earliest start time first. */
 export async function getConcertsByDate(): Promise<Concert[]> {
   const concerts = await getCollection('concerts');
-  return concerts.sort((a, b) => a.data.date.getTime() - b.data.date.getTime());
+  return concerts.sort((a, b) => {
+    const byDate = a.data.date.getTime() - b.data.date.getTime();
+    return byDate !== 0 ? byDate : timeRank(a) - timeRank(b);
+  });
 }
 
 /** Upcoming (today onward), soonest first. */
