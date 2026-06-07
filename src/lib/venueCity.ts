@@ -18,6 +18,33 @@ const VENUE_CITY: Record<string, string> = {
   Mejeriet: 'Lund',
   'Malmö Live': 'Malmö',
   'Göteborgs Konserthus': 'Göteborg',
+  // Stockholm Jazz Festival venues
+  'Kulturhuset Stadsteatern': 'Stockholm',
+  Allhelgonakyrkan: 'Stockholm',
+  'Reimersholme Hotel': 'Stockholm',
+  'Moderna Museet': 'Stockholm',
+  'Stallet Världens Musik': 'Stockholm',
+  Nalen: 'Stockholm',
+  Folkoperan: 'Stockholm',
+  'Bistro Eker': 'Stockholm',
+  Slaktkyrkan: 'Stockholm',
+  Vasamuseet: 'Stockholm',
+  Scenkonstmuseet: 'Stockholm',
+  'KFUM Central': 'Stockholm',
+  Aspen: 'Stockholm',
+  'Nya Cirkus': 'Stockholm',
+  Konserthuset: 'Stockholm',
+  'Folkets Hus Kallhäll': 'Kallhäll',
+  'Huddinge Kulturhus hos Folkes': 'Huddinge',
+  'Scen Messingen': 'Upplands Väsby',
+  'Vallentuna Teater': 'Vallentuna',
+  // Bangen Jazz & Blues venues (Sandviken)
+  'Sandvikens kyrka': 'Sandviken',
+  Kanalgården: 'Sandviken',
+  Musikverket: 'Sandviken',
+  Jansasscenen: 'Sandviken',
+  Stadsparken: 'Sandviken',
+  Teaterbaren: 'Sandviken',
 };
 
 export function cityFor(venue: string): string | undefined {
