@@ -1,6 +1,9 @@
 // Minimal service worker for Jazzkonserter.se — enables installability and
-// offline use. Bump VERSION to invalidate old caches on deploy.
-const VERSION = 'v1';
+// offline use. VERSION is auto-stamped per deploy by the stamp-sw-version
+// integration in astro.config.mjs, so old caches invalidate on their own —
+// no manual bump. (This 'dev' value is only used if the stamp ever fails; the
+// SW is registered in production builds only.)
+const VERSION = 'dev';
 const CACHE = `jazzkonserter-${VERSION}`;
 const APP_SHELL = ['/', '/favicon.svg', '/icon-192.png', '/icon-512.png', '/site.webmanifest'];
 
