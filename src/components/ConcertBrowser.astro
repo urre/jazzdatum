@@ -1,6 +1,6 @@
 ---
 import type { Concert } from '../lib/concerts';
-import { groupByDate, uniqueVenues } from '../lib/concerts';
+import { groupByDate, uniqueVenues, uniqueFestivals } from '../lib/concerts';
 import ConcertRow from './ConcertRow.astro';
 import styles from './ConcertBrowser.module.css';
 
@@ -10,6 +10,7 @@ interface Props {
 
 const { concerts } = Astro.props;
 const venues = uniqueVenues(concerts);
+const festivals = uniqueFestivals(concerts);
 const groups = groupByDate(concerts);
 
 const iso = (d: Date) =>
@@ -20,7 +21,7 @@ const minDate = dates.length ? iso(dates[0]) : undefined;
 const maxDate = dates.length ? iso(dates[dates.length - 1]) : undefined;
 
 const searchText = (c: Concert) =>
-  [c.data.artist, c.data.venue, c.data.title].join(' ').toLowerCase();
+  [c.data.artist, c.data.venue, c.data.title, c.data.festival].filter(Boolean).join(' ').toLowerCase();
 
 // Comparable local start "YYYY-MM-DDTHH:MM" used to hide concerts whose start
 // time has already passed today. Concerts without a known time stay visible
@@ -101,6 +102,16 @@ const groupsWithStart = groups.map((group) => {
       </div>
     )}
 
+    {festivals.length > 0 && (
+      <div class={styles.field}>
+        <label class={styles.fieldLabel} for="cb-festival">Festival</label>
+        <select id="cb-festival" class={styles.select} data-festival-filter>
+          <option value="">Alla konserter</option>
+          {festivals.map((f) => <option value={f}>{f}</option>)}
+        </select>
+      </div>
+    )}
+
     <div class={styles.field}>
       <span class={styles.fieldLabel}>Datum</span>
       <div class={styles.dateRow}>
@@ -149,6 +160,7 @@ const groupsWithStart = groups.map((group) => {
                     data-row
                     data-search={searchText(concert)}
                     data-venue={concert.data.venue}
+                    data-festival={concert.data.festival ?? ''}
                     data-date={iso(concert.data.date)}
                     data-start={startKey(concert)}
                     hidden={startIndex + i >= PAGE_SIZE}
@@ -181,6 +193,7 @@ const groupsWithStart = groups.map((group) => {
     if (!root) return;
     const input = root.querySelector<HTMLInputElement>('[data-search-input]');
     const venueFilter = root.querySelector<HTMLSelectElement>('[data-venue-filter]');
+    const festivalFilter = root.querySelector<HTMLSelectElement>('[data-festival-filter]');
     const dateFrom = root.querySelector<HTMLInputElement>('[data-date-from]');
     const dateTo = root.querySelector<HTMLInputElement>('[data-date-to]');
     const pageSizeSel = root.querySelector<HTMLSelectElement>('[data-page-size]');
@@ -211,6 +224,7 @@ const groupsWithStart = groups.map((group) => {
     function matches(row: HTMLElement) {
       const q = (input?.value ?? '').trim().toLowerCase();
       const venue = venueFilter?.value ?? '';
+      const festival = festivalFilter?.value ?? '';
       const from = dateFrom?.value ?? '';
       const to = dateTo?.value ?? '';
       const date = row.dataset.date ?? '';
@@ -221,6 +235,7 @@ const groupsWithStart = groups.map((group) => {
         start >= nowLocal &&
         (!q || (row.dataset.search ?? '').includes(q)) &&
         (!venue || row.dataset.venue === venue) &&
+        (!festival || row.dataset.festival === festival) &&
         (!from || date >= from) &&
         (!to || date <= to)
       );
@@ -230,6 +245,7 @@ const groupsWithStart = groups.map((group) => {
       let n = 0;
       if ((input?.value ?? '').trim()) n++;
       if (venueFilter?.value) n++;
+      if (festivalFilter?.value) n++;
       if (dateFrom?.value) n++;
       if (dateTo?.value) n++;
       return n;
@@ -275,6 +291,7 @@ const groupsWithStart = groups.map((group) => {
     function clearFilters() {
       if (input) input.value = '';
       if (venueFilter) venueFilter.value = '';
+      if (festivalFilter) festivalFilter.value = '';
       if (dateFrom) dateFrom.value = '';
       if (dateTo) dateTo.value = '';
       if (pageSizeSel) pageSizeSel.value = '25';
@@ -283,6 +300,7 @@ const groupsWithStart = groups.map((group) => {
 
     input?.addEventListener('input', reset);
     venueFilter?.addEventListener('change', reset);
+    festivalFilter?.addEventListener('change', reset);
     dateFrom?.addEventListener('change', reset);
     dateTo?.addEventListener('change', reset);
     pageSizeSel?.addEventListener('change', reset);

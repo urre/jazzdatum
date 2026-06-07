@@ -8,6 +8,9 @@ const concerts = defineCollection({
     title: z.string(),
     artist: z.string(),
     venue: z.string(),
+    /** Festival this concert belongs to, e.g. "Stockholm Jazz Festival" — lets
+        multi-venue festivals be grouped/filtered together. */
+    festival: z.string().optional(),
     venueUrl: z.string().url().optional(),
     date: z.coerce.date(),
     time: z.string().optional(),

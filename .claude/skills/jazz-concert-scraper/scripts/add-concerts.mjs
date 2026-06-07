@@ -103,6 +103,7 @@ function buildMdx(c) {
   lines.push(`title: ${yamlString(c.title)}`);
   lines.push(`artist: ${yamlString(c.artist)}`);
   lines.push(`venue: ${yamlString(c.venue)}`);
+  if (c.festival) lines.push(`festival: ${yamlString(c.festival)}`);
   if (c.venueUrl) lines.push(`venueUrl: ${yamlString(c.venueUrl)}`);
   lines.push(`date: ${c.date}`); // YYYY-MM-DD, unquoted for z.coerce.date()
   if (c.time) lines.push(`time: ${yamlString(c.time)}`);

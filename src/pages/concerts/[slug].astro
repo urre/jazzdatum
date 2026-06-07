@@ -88,6 +88,12 @@ const metaDescription =
                 <dd>{data.genre.join(', ')}</dd>
               </div>
             )}
+            {data.festival && data.festival !== data.venue && (
+              <div class={styles.fact}>
+                <dt>Festival</dt>
+                <dd>{data.festival}</dd>
+              </div>
+            )}
           </dl>
 
           <div class={styles.actions}>

@@ -47,6 +47,13 @@ export function uniqueVenues(concerts: Concert[]): string[] {
   );
 }
 
+/** Distinct festival names (concerts without a festival are ignored), alphabetically. */
+export function uniqueFestivals(concerts: Concert[]): string[] {
+  return [...new Set(concerts.map((c) => c.data.festival).filter((f): f is string => !!f))].sort(
+    (a, b) => a.localeCompare(b, 'sv')
+  );
+}
+
 export interface ConcertGroup {
   /** YYYY-MM-DD key */
   key: string;
