@@ -1,0 +1,38 @@
+.content {
+  max-width: 760px;
+}
+
+.title {
+  font-size: clamp(1.9rem, 5vw, 2.6rem);
+  margin-bottom: var(--space-3);
+}
+
+.lead {
+  color: var(--color-ink-soft);
+  font-size: 1.05rem;
+  margin-bottom: var(--space-4);
+}
+
+.contact {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: var(--space-8);
+}
+
+.contact a {
+  color: var(--color-accent);
+}
+
+.formWrap {
+  background: var(--color-surface);
+  overflow: hidden;
+}
+
+.form {
+  display: block;
+  width: 100%;
+  /* Google Forms can't auto-size cross-origin; this fits the (short) form on
+     desktop and leaves a little slack for mobile's taller stacked layout. */
+  height: 980px;
+  border: 0;
+}

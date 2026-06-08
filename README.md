@@ -4,6 +4,11 @@ An [Astro](https://astro.build) site that aggregates and presents jazz concerts
 from venues across Sweden. Concert data lives as MDX files in an Astro content
 collection and is collected via the `jazz-concert-scraper` Claude skill.
 
+## Links
+
+- Google Forms https://docs.google.com/forms/d/1Q0gG0uL6eXswcaWtwMQslIK3X_4ZGOXB4INeCpBlEnw/edit
+- Vercel Analytics https://vercel.com/urban-sandens-projects/jazzdatum/analytics
+
 ## Tech stack
 
 - **Astro 6** with the MDX integration and the **Content Layer API**

@@ -14,6 +14,15 @@
   font-size: 0.85rem;
 }
 
+.tip {
+  margin-top: var(--space-2);
+}
+
+.tip a {
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
 .themeToggle {
   display: inline-flex;
   align-items: center;

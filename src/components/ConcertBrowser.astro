@@ -213,6 +213,17 @@ const groupsWithStart = groups.map((group) => {
 
     let page = 1;
 
+    // Restore filter + pagination state from the URL query, so returning from a
+    // detail page — or opening a shared link — reproduces the same view.
+    const params = new URLSearchParams(location.search);
+    if (input && params.has('q')) input.value = params.get('q')!;
+    if (venueFilter && params.has('venue')) venueFilter.value = params.get('venue')!;
+    if (festivalFilter && params.has('festival')) festivalFilter.value = params.get('festival')!;
+    if (dateFrom && params.has('from')) dateFrom.value = params.get('from')!;
+    if (dateTo && params.has('to')) dateTo.value = params.get('to')!;
+    if (pageSizeSel && params.has('size')) pageSizeSel.value = params.get('size')!;
+    if (params.has('page')) page = Math.max(1, parseInt(params.get('page')!, 10) || 1);
+
     // "Now" by the viewer's clock — the build-time upcoming filter freezes on
     // a static site, so we re-floor here so past concerts never show. We floor
     // to the current minute (not midnight) so a concert earlier today drops off
@@ -251,6 +262,26 @@ const groupsWithStart = groups.map((group) => {
       return n;
     }
 
+    // Mirror the current state into the URL (replaceState — no history spam) and
+    // remember it for the detail page's back link.
+    function syncUrl() {
+      const p = new URLSearchParams();
+      const q = (input?.value ?? '').trim();
+      if (q) p.set('q', q);
+      if (venueFilter?.value) p.set('venue', venueFilter.value);
+      if (festivalFilter?.value) p.set('festival', festivalFilter.value);
+      if (dateFrom?.value) p.set('from', dateFrom.value);
+      if (dateTo?.value) p.set('to', dateTo.value);
+      if (pageSizeSel && pageSizeSel.value !== '25') p.set('size', pageSizeSel.value);
+      if (page > 1) p.set('page', String(page));
+      const qs = p.toString();
+      const url = location.pathname + (qs ? `?${qs}` : '');
+      history.replaceState(history.state, '', url);
+      try {
+        sessionStorage.setItem('jk:lastListing', url);
+      } catch (e) {}
+    }
+
     function render() {
       const matched = rows.filter(matches);
       const total = matched.length;
@@ -281,6 +312,8 @@ const groupsWithStart = groups.map((group) => {
         const a = activeFilters();
         activeCountEl.textContent = a === 0 ? 'Inga aktiva' : `${a} aktiva`;
       }
+
+      syncUrl();
     }
 
     function reset() {

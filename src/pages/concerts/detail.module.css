@@ -99,7 +99,6 @@
   gap: var(--space-4) var(--space-8);
   margin: var(--space-6) 0;
   padding-top: var(--space-6);
-  border-top: 1px solid var(--color-border);
 }
 
 .fact dt {

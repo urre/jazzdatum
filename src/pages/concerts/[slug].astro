@@ -44,7 +44,7 @@ const metaDescription =
   <div class={styles.browser} style={`--vc:${vc};--vc-text:${vcText};--vc-tint:${vcTint};--vc-tint-dark:${vcTintDark}`}>
     <aside class={styles.sidebar}>
       <div class={styles.sidebarInner}>
-        <a class={styles.back} href="/">
+        <a class={styles.back} href="/" data-back>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M15 6l-6 6 6 6" />
           </svg>
@@ -139,3 +139,26 @@ const metaDescription =
     </div>
   </div>
 </Layout>
+
+<script>
+  // Make "Alla konserter" return to the filtered listing the visitor came from.
+  function initBack() {
+    const back = document.querySelector<HTMLAnchorElement>('[data-back]');
+    if (!back) return;
+    // Point the link at the remembered listing URL (also makes right-click /
+    // open-in-new-tab and direct-landing fall back sensibly).
+    const last = sessionStorage.getItem('jk:lastListing');
+    if (last) back.setAttribute('href', last);
+    if (back.dataset.bound) return;
+    back.dataset.bound = '1';
+    back.addEventListener('click', (e) => {
+      // Came from the listing this session → go back so filters AND scroll
+      // position are restored; otherwise let the href navigation happen.
+      if (sessionStorage.getItem('jk:lastListing') && history.length > 1) {
+        e.preventDefault();
+        history.back();
+      }
+    });
+  }
+  document.addEventListener('astro:page-load', initBack);
+</script>
