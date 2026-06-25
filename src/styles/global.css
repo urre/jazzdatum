@@ -28,6 +28,10 @@
   --color-surface: #ffffff;
   --color-border: #ece5d8;
 
+  /* Form fields — distinct from surface so inputs read as inputs */
+  --color-field: #ffffff;
+  --color-field-border: #ece5d8;
+
   /* Brand accent (blue) */
   --color-accent: #2f6fe0;
   --color-accent-soft: #dbe7fb;
@@ -80,6 +84,11 @@
   --color-bg-pink: #2e1f2a;
   --color-surface: #181520;
   --color-border: #2f2940;
+
+  /* Recessed, slightly darker than the surrounding panel + a clearer edge,
+     so form fields stand out from the dark surface without shouting. */
+  --color-field: #0e0c14;
+  --color-field-border: #3c3552;
 
   --color-accent: #6d97f0;
   --color-accent-soft: #233152;
