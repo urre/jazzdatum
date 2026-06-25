@@ -45,6 +45,23 @@ const VENUE_CITY: Record<string, string> = {
   Jansasscenen: 'Sandviken',
   Stadsparken: 'Sandviken',
   Teaterbaren: 'Sandviken',
+  // Utopia Jazz & Göteborg venues
+  'Utopia Jazz': 'Göteborg',
+  'Stora teatern': 'Göteborg',
+  'World of Volvo': 'Göteborg',
+  // Bohuslän Big Band tour venues
+  'Arild Jazzfestival': 'Arild',
+  'Kulturhuset Najaden': 'Halmstad',
+  'Landskrona teater': 'Landskrona',
+  Kulturkvarteret: 'Kristianstad',
+  'Skurups folkhögskola': 'Skurup',
+  Stadshallen: 'Lund',
+  'Östergötlands museum': 'Linköping',
+  Messingen: 'Upplands Väsby',
+  'Uppsala Konsert & Kongress': 'Uppsala',
+  'Gävle konserthus': 'Gävle',
+  Culturum: 'Nyköping',
+  Dergårdsteatern: 'Lerum',
 };
 
 export function cityFor(venue: string): string | undefined {
