@@ -72,6 +72,7 @@ const VENUE_CITY: Record<string, string> = {
   Scenkonstmuseet: 'Stockholm',
   'Nya Cirkus': 'Stockholm',
   'KFUM Central': 'Stockholm',
+  Skansen: 'Stockholm',
   Aspen: 'Stockholm',
   'Bistro Eker': 'Stockholm',
   'Unity Jazz': 'Stockholm',
@@ -83,10 +84,12 @@ const VENUE_CITY: Record<string, string> = {
   'Stora teatern': 'Göteborg',
   'Musikens Hus': 'Göteborg',
   'World of Volvo': 'Göteborg',
+  Monument: 'Göteborg',
   // Uppsala
   'Botaniska trädgården': 'Uppsala',
   'Uppsala Konsert & Kongress': 'Uppsala',
   Parksnäckan: 'Uppsala',
+  Blackbird: 'Uppsala',
   // Malmö
   'Malmö Live': 'Malmö',
   'Slagthusets Teater': 'Malmö',
@@ -116,6 +119,8 @@ const VENUE_CITY: Record<string, string> = {
   'Folkets Hus Kallhäll': 'Järfälla',
   'Huddinge Kulturhus hos Folkes': 'Huddinge',
   'Skottvångs Grufva': 'Gnesta',
+  'Caféscenen i Spira': 'Jönköping',
+  'Birka Folkhögskola': 'Ås',
   // Festivals used as venue
   'Ystad Sweden Jazz Festival': 'Ystad',
   'Umeå Jazzfestival': 'Umeå',
