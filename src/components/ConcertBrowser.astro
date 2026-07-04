@@ -1,6 +1,6 @@
 ---
 import type { Concert } from '../lib/concerts';
-import { groupByDate, uniqueVenues, uniqueFestivals } from '../lib/concerts';
+import { groupByDate, uniqueVenues, uniqueFestivals, uniqueCities, cityForVenue } from '../lib/concerts';
 import ConcertRow from './ConcertRow.astro';
 import styles from './ConcertBrowser.module.css';
 
@@ -9,6 +9,7 @@ interface Props {
 }
 
 const { concerts } = Astro.props;
+const cities = uniqueCities(concerts);
 const venues = uniqueVenues(concerts);
 const festivals = uniqueFestivals(concerts);
 const groups = groupByDate(concerts);
@@ -92,6 +93,16 @@ const groupsWithStart = groups.map((group) => {
       </div>
     </div>
 
+    {cities.length > 1 && (
+      <div class={styles.field}>
+        <label class={styles.fieldLabel} for="cb-city">Stad</label>
+        <select id="cb-city" class={styles.select} data-city-filter>
+          <option value="">Alla städer</option>
+          {cities.map((c) => <option value={c}>{c}</option>)}
+        </select>
+      </div>
+    )}
+
     {venues.length > 1 && (
       <div class={styles.field}>
         <label class={styles.fieldLabel} for="cb-venue">Spelställe</label>
@@ -159,6 +170,7 @@ const groupsWithStart = groups.map((group) => {
                   <li
                     data-row
                     data-search={searchText(concert)}
+                    data-city={cityForVenue(concert.data.venue)}
                     data-venue={concert.data.venue}
                     data-festival={concert.data.festival ?? ''}
                     data-date={iso(concert.data.date)}
@@ -192,6 +204,7 @@ const groupsWithStart = groups.map((group) => {
     const root = document.querySelector<HTMLElement>('[data-browser]');
     if (!root) return;
     const input = root.querySelector<HTMLInputElement>('[data-search-input]');
+    const cityFilter = root.querySelector<HTMLSelectElement>('[data-city-filter]');
     const venueFilter = root.querySelector<HTMLSelectElement>('[data-venue-filter]');
     const festivalFilter = root.querySelector<HTMLSelectElement>('[data-festival-filter]');
     const dateFrom = root.querySelector<HTMLInputElement>('[data-date-from]');
@@ -217,6 +230,7 @@ const groupsWithStart = groups.map((group) => {
     // detail page — or opening a shared link — reproduces the same view.
     const params = new URLSearchParams(location.search);
     if (input && params.has('q')) input.value = params.get('q')!;
+    if (cityFilter && params.has('city')) cityFilter.value = params.get('city')!;
     if (venueFilter && params.has('venue')) venueFilter.value = params.get('venue')!;
     if (festivalFilter && params.has('festival')) festivalFilter.value = params.get('festival')!;
     if (dateFrom && params.has('from')) dateFrom.value = params.get('from')!;
@@ -234,6 +248,7 @@ const groupsWithStart = groups.map((group) => {
 
     function matches(row: HTMLElement) {
       const q = (input?.value ?? '').trim().toLowerCase();
+      const city = cityFilter?.value ?? '';
       const venue = venueFilter?.value ?? '';
       const festival = festivalFilter?.value ?? '';
       const from = dateFrom?.value ?? '';
@@ -245,6 +260,7 @@ const groupsWithStart = groups.map((group) => {
       return (
         start >= nowLocal &&
         (!q || (row.dataset.search ?? '').includes(q)) &&
+        (!city || row.dataset.city === city) &&
         (!venue || row.dataset.venue === venue) &&
         (!festival || row.dataset.festival === festival) &&
         (!from || date >= from) &&
@@ -255,6 +271,7 @@ const groupsWithStart = groups.map((group) => {
     function activeFilters() {
       let n = 0;
       if ((input?.value ?? '').trim()) n++;
+      if (cityFilter?.value) n++;
       if (venueFilter?.value) n++;
       if (festivalFilter?.value) n++;
       if (dateFrom?.value) n++;
@@ -268,6 +285,7 @@ const groupsWithStart = groups.map((group) => {
       const p = new URLSearchParams();
       const q = (input?.value ?? '').trim();
       if (q) p.set('q', q);
+      if (cityFilter?.value) p.set('city', cityFilter.value);
       if (venueFilter?.value) p.set('venue', venueFilter.value);
       if (festivalFilter?.value) p.set('festival', festivalFilter.value);
       if (dateFrom?.value) p.set('from', dateFrom.value);
@@ -323,6 +341,7 @@ const groupsWithStart = groups.map((group) => {
 
     function clearFilters() {
       if (input) input.value = '';
+      if (cityFilter) cityFilter.value = '';
       if (venueFilter) venueFilter.value = '';
       if (festivalFilter) festivalFilter.value = '';
       if (dateFrom) dateFrom.value = '';
@@ -332,6 +351,7 @@ const groupsWithStart = groups.map((group) => {
     }
 
     input?.addEventListener('input', reset);
+    cityFilter?.addEventListener('change', reset);
     venueFilter?.addEventListener('change', reset);
     festivalFilter?.addEventListener('change', reset);
     dateFrom?.addEventListener('change', reset);

@@ -47,6 +47,93 @@ export function uniqueVenues(concerts: Concert[]): string[] {
   );
 }
 
+/**
+ * Venue → city lookup. Concerts don't carry a city field, so we map each known
+ * venue to the town it sits in. Touring acts (Bohuslän Big Band, Bangen Jazz &
+ * Blues) play many venues, so the key is always the physical venue, not the
+ * organiser. When adding a new venue, add it here so it shows up in the city
+ * filter; unmapped venues simply have no city.
+ */
+const VENUE_CITY: Record<string, string> = {
+  // Stockholm
+  Fasching: 'Stockholm',
+  'Glenn Miller Café': 'Stockholm',
+  Nalen: 'Stockholm',
+  'Konserthuset Stockholm': 'Stockholm',
+  Konserthuset: 'Stockholm',
+  'Kulturhuset Stadsteatern': 'Stockholm',
+  Slaktkyrkan: 'Stockholm',
+  'Moderna Museet': 'Stockholm',
+  Folkoperan: 'Stockholm',
+  'Stallet Världens Musik': 'Stockholm',
+  Allhelgonakyrkan: 'Stockholm',
+  'Reimersholme Hotel': 'Stockholm',
+  Vasamuseet: 'Stockholm',
+  Scenkonstmuseet: 'Stockholm',
+  'Nya Cirkus': 'Stockholm',
+  'KFUM Central': 'Stockholm',
+  Aspen: 'Stockholm',
+  'Bistro Eker': 'Stockholm',
+  'Unity Jazz': 'Stockholm',
+  'Utopia Jazz': 'Stockholm',
+  // Göteborg
+  Nefertiti: 'Göteborg',
+  'Göteborgs Konserthus': 'Göteborg',
+  'Playhouse Valand': 'Göteborg',
+  'Stora teatern': 'Göteborg',
+  'Musikens Hus': 'Göteborg',
+  'World of Volvo': 'Göteborg',
+  // Uppsala
+  'Botaniska trädgården': 'Uppsala',
+  'Uppsala Konsert & Kongress': 'Uppsala',
+  Parksnäckan: 'Uppsala',
+  // Malmö
+  'Malmö Live': 'Malmö',
+  'Slagthusets Teater': 'Malmö',
+  // Lund
+  Mejeriet: 'Lund',
+  Stadshallen: 'Lund',
+  // Sandviken (Bangen Jazz & Blues)
+  'Sandvikens kyrka': 'Sandviken',
+  Kanalgården: 'Sandviken',
+  Musikverket: 'Sandviken',
+  Stadsparken: 'Sandviken',
+  Teaterbaren: 'Sandviken',
+  Jansasscenen: 'Sandviken',
+  // Bohuslän Big Band tour stops + others
+  Culturum: 'Nyköping',
+  Dergårdsteatern: 'Lerum',
+  Kulturkvarteret: 'Kristianstad',
+  'Kulturhuset Najaden': 'Halmstad',
+  'Landskrona teater': 'Landskrona',
+  Messingen: 'Upplands Väsby',
+  'Scen Messingen': 'Upplands Väsby',
+  'Skurups folkhögskola': 'Skurup',
+  'Östergötlands museum': 'Linköping',
+  'Gävle konserthus': 'Gävle',
+  'Vara Konserthus': 'Vara',
+  'Vallentuna Teater': 'Vallentuna',
+  'Folkets Hus Kallhäll': 'Järfälla',
+  'Huddinge Kulturhus hos Folkes': 'Huddinge',
+  'Skottvångs Grufva': 'Gnesta',
+  // Festivals used as venue
+  'Ystad Sweden Jazz Festival': 'Ystad',
+  'Umeå Jazzfestival': 'Umeå',
+  'Arild Jazzfestival': 'Arild',
+};
+
+/** City for a venue, or '' if the venue isn't mapped. */
+export function cityForVenue(venue: string): string {
+  return VENUE_CITY[venue] ?? '';
+}
+
+/** Distinct cities across the given concerts, alphabetically. */
+export function uniqueCities(concerts: Concert[]): string[] {
+  return [
+    ...new Set(concerts.map((c) => cityForVenue(c.data.venue)).filter(Boolean)),
+  ].sort((a, b) => a.localeCompare(b, 'sv'));
+}
+
 /** Distinct festival names (concerts without a festival are ignored), alphabetically. */
 export function uniqueFestivals(concerts: Concert[]): string[] {
   return [...new Set(concerts.map((c) => c.data.festival).filter((f): f is string => !!f))].sort(
