@@ -121,6 +121,9 @@ const VENUE_CITY: Record<string, string> = {
   'Skottvångs Grufva': 'Gnesta',
   'Caféscenen i Spira': 'Jönköping',
   'Birka Folkhögskola': 'Ås',
+  'Gustafsbergs Badrestaurang': 'Uddevalla',
+  Nynäsgården: 'Nynäshamn',
+  'Spritan i Ödåkra': 'Helsingborg',
   // Festivals used as venue
   'Ystad Sweden Jazz Festival': 'Ystad',
   'Umeå Jazzfestival': 'Umeå',
