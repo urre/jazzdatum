@@ -36,7 +36,13 @@
       "WebFetch(domain:www.tickster.com)",
       "WebFetch(domain:malmolive.se)",
       "WebFetch(domain:www.malmolive.se)",
-      "WebFetch(domain:biljetter.malmolive.se)"
+      "WebFetch(domain:biljetter.malmolive.se)",
+      "WebFetch(domain:skansen.se)",
+      "WebFetch(domain:www.skansen.se)",
+      "WebFetch(domain:ljazz.se)",
+      "WebFetch(domain:www.ljazz.se)",
+      "WebFetch(domain:billetto.se)",
+      "WebFetch(domain:www.billetto.se)"
     ]
   }
 }
