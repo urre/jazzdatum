@@ -93,6 +93,11 @@ The site aggregates concerts from these Swedish jazz venues:
 6. **Konserthuset (Jazz)** - https://www.konserthuset.se/om-oss/var-verksamhet/jazz-i-konserthuset/
 7. **Vara Konserthus** - https://www.varakonserthus.se/evenemang/jazz-och-storband/
 8. **Digga Göteborg** - https://digga.se/app/goteborg/konsert/jazz
+9. **Nortic** - https://www.nortic.se/ (national ticket platform; via its open search API — also the only working route to Fasching's full calendar)
+10. **Katrineholm Jazz- och Bluesfestival** - https://www.katrineholmjazz.se/
+
+The full source list, per-venue quirks and the Nortic API details live in the
+skill: `.claude/skills/jazz-concert-scraper/SKILL.md`.
 
 ### Using the Jazz Scraper Skill
 

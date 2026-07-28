@@ -77,6 +77,8 @@ const VENUE_CITY: Record<string, string> = {
   'Bistro Eker': 'Stockholm',
   'Unity Jazz': 'Stockholm',
   'Utopia Jazz': 'Stockholm',
+  'Ersta kyrka': 'Stockholm',
+  'Savannah, Marabouparken': 'Sundbyberg',
   // Göteborg
   Nefertiti: 'Göteborg',
   'Göteborgs Konserthus': 'Göteborg',
@@ -85,6 +87,7 @@ const VENUE_CITY: Record<string, string> = {
   'Musikens Hus': 'Göteborg',
   'World of Volvo': 'Göteborg',
   Monument: 'Göteborg',
+  '2Lång': 'Göteborg',
   // Uppsala
   'Botaniska trädgården': 'Uppsala',
   'Uppsala Konsert & Kongress': 'Uppsala',
@@ -93,6 +96,7 @@ const VENUE_CITY: Record<string, string> = {
   // Malmö
   'Malmö Live': 'Malmö',
   'Slagthusets Teater': 'Malmö',
+  'Plan B': 'Malmö',
   // Lund
   Mejeriet: 'Lund',
   Stadshallen: 'Lund',
@@ -124,10 +128,35 @@ const VENUE_CITY: Record<string, string> = {
   'Gustafsbergs Badrestaurang': 'Uddevalla',
   Nynäsgården: 'Nynäshamn',
   'Spritan i Ödåkra': 'Helsingborg',
+  // Nortic-sourced venues (jazz clubs, kulturhus and churches across the country)
+  'Ale Teater': 'Nödinge',
+  'Blå Salongen': 'Hässleholm',
+  'Röda Salongen': 'Hässleholm',
+  'Cozmoz Arena': 'Borlänge',
+  'Folkets Park Borlänge': 'Borlänge',
+  'Folkets Hus Ulricehamn': 'Ulricehamn',
+  Fjällstugan: 'Jönköping',
+  Fredrikskyrkan: 'Karlskrona',
+  'Pingstkyrkan Karlskrona': 'Karlskrona',
+  'Karlshamns Stadsteater': 'Karlshamn',
+  Gummifabriken: 'Värnamo',
+  'Hedentorps Plantskola': 'Ängelholm',
+  'Konstmuseet Gösta Werner': 'Simrishamn',
+  'Mariestads Teater': 'Mariestad',
+  'Musikhuset Gävle': 'Gävle',
+  'Osbecksgymnasiets aula': 'Laholm',
+  'Pesons Lada': 'Dala-Järna',
+  Sagateatern: 'Linköping',
+  'Skensta Theater': 'Eskilstuna',
+  'Smedjan Stjärnsund': 'Stjärnsund',
+  Svampen: 'Örebro',
+  'The House': 'Halmstad',
+  'Wisby Strand': 'Visby',
   // Festivals used as venue
   'Ystad Sweden Jazz Festival': 'Ystad',
   'Umeå Jazzfestival': 'Umeå',
   'Arild Jazzfestival': 'Arild',
+  Hällevik: 'Sölvesborg',
 };
 
 /** City for a venue, or '' if the venue isn't mapped. */

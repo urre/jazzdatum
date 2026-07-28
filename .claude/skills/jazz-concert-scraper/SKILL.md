@@ -34,7 +34,7 @@ This is the helper script's default `--content-dir`. Override with
 |---|-------|-----|-------|
 | 1 | Glenn Miller Café | https://www.glennmillercafe.se/konserter | Mostly static HTML; weekly listings |
 | 2 | Nefertiti | https://www.nefertiti.se/ | JS-rendered calendar — see "JS-heavy sites" |
-| 3 | Fasching | https://www.fasching.se/en/calendar/ | English calendar; JS-rendered |
+| 3 | Fasching | https://www.fasching.se/en/calendar/ | English calendar; JS-rendered and usually returns **nothing** — get the full program from the Nortic API instead (#21) |
 | 4 | Konserthuset – Blue House Jazz | https://www.konserthuset.se/program-och-biljetter/konsertserier/blue-house-jazz/ | Filter to the Blue House series |
 | 5 | Svensk Jazz | https://svenskjazz.se/konserter/ | National listings across many towns |
 | 6 | Konserthuset – Jazz | https://www.konserthuset.se/om-oss/var-verksamhet/jazz-i-konserthuset/ | Overlaps #4; dedup handles repeats |
@@ -52,6 +52,33 @@ This is the helper script's default `--content-dir`. Override with
 | 17 | Utopia Jazz | https://billetto.se/users/utopia-jazz | Göteborg club (Karl Johansgatan 6). **JS-rendered** Billetto profile — WebFetch returns nothing; render with the browser MCP, or fetch each `/e/…-biljetter-<id>` event page (same-origin) and read its JSON-LD `Event` block for date/time/price/description. `venue: "Utopia Jazz"`, `venueUrl: https://utopiajazz.com` |
 | 19 | Jazz på Skansen | https://www.skansen.se/se-och-gora/konsert-dans/jazz-pa-skansen/ | Aug–Sep series on **Sollidenscenen**, Stockholm. `venue: "Skansen"`, price "Ingår i entrén", ticketUrl → each event page. Add to city map (Stockholm) |
 | 20 | L'Jazz i Ljungskile | https://www.ljazz.se/ | **Ljungskile** (not Linköping) — annual Sommarjazzveckan, last week of July at Gustafsbergs Badrestaurang, Uddevalla. Site is often stale; confirm the year before importing |
+| 21 | Nortic | https://www.nortic.se/ | National ticket platform — **the single highest-yield source**. Both the old and new sites are JS-rendered, but the search API is open: see "Nortic API" below. Covers Fasching's full calendar plus small jazz clubs (Gävle JazzClub, Jazzklubb Nordost, Jazzklubben Hässleholm, Borlänge Jazzklubb) that have no scrapeable site of their own |
+| 22 | Katrineholm Jazz- och Bluesfestival | https://www.katrineholmjazz.se/ | One-day festival at **Stora Djulö Herrgård, Katrineholm**, late July (2026 edition was 25 July). Static HTML, program is a time→artist table on the homepage; no prices or ticket links. `venue: "Stora Djulö Herrgård"`, `festival: "Katrineholm Jazz- och Bluesfestival"`. Next year's program appears in spring — re-check then |
+
+## Nortic API
+
+`nortic.se` renders everything client-side, so WebFetch returns empty shells. The
+Nuxt frontend talks to an open search API — use it directly:
+
+```
+https://tvw5qfkstj.execute-api.eu-north-1.amazonaws.com/prod/search-event?search=<term>&offset=<n>
+```
+
+- 25 events per page; bump `offset` by 25 until a short page comes back.
+- `search` matches event name, city **and organizer** — `search=fasching` returns
+  Fasching's entire calendar (~100 events), which is the only reliable way to get it.
+- Useful terms: `fasching`, `jazz`, `jazzklubb`, `jazzfestival`, `storband`, `big band`.
+  Dedupe by `id` across terms.
+- Fields: `id`, `name`, `first_date`/`last_date` (`YYYY-MM-DD HH:MM:SS`), `venue`,
+  `city`, `nr_of_shows`, `organizer_name`, `event_category`, `short_information`,
+  `information` (HTML with ISO-8859-1 entities — strip tags and decode `&auml;` etc.).
+- No price field. `ticketUrl` → `https://www.nortic.se/ticket/event/<id>`.
+- The results only include on-sale events, but still filter `first_date >= today`.
+- Broad terms pull in a lot of non-jazz (`band`/`swing` match cinema and dance
+  listings). Curate by hand against `name`/`short_information`; don't bulk-import.
+- Skip `Kombo:`/`Kombobiljett` rows — they're combo tickets for two concerts that
+  are also listed individually.
+- For `nr_of_shows > 1` use `first_date` and mention the run in the body.
 
 ## Workflow
 
