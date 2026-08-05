@@ -189,7 +189,7 @@
   color: var(--color-muted);
 }
 
-/* ---- Responsive: concert first, sidebar (back link + about) below it ---- */
+/* ---- Responsive: back link, then the concert, then the About card ---- */
 @media (max-width: 900px) {
   .browser {
     grid-template-columns: 1fr;
@@ -197,20 +197,29 @@
     padding: var(--space-4);
     min-height: 0;
   }
-  /* The sidebar stays first in the DOM so the back link keeps its place early in
-     tab order; only the visual order flips on narrow screens. */
-  .main {
+  /* Flatten the sidebar so its two children become grid items in their own
+     right — that lets the back link rise above the concert while the About
+     card drops below it, without duplicating markup or splitting the column
+     on desktop. Both wrappers keep their semantics; only their boxes go. */
+  .sidebar,
+  .sidebarInner {
+    display: contents;
+  }
+  .back {
     order: 1;
+    justify-self: start;
+  }
+  .main {
+    order: 2;
     padding: var(--space-5);
     border-radius: var(--radius);
   }
-  .sidebar {
-    order: 2;
+  .about {
+    order: 3;
+    background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: var(--radius);
     box-shadow: var(--shadow-sm);
-  }
-  .sidebarInner {
-    position: static;
+    padding: var(--space-6);
   }
 }
