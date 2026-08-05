@@ -152,6 +152,23 @@ const VENUE_CITY: Record<string, string> = {
   Svampen: 'Örebro',
   'The House': 'Halmstad',
   'Wisby Strand': 'Visby',
+  Immanuelskyrkan: 'Jönköping',
+  'Folkets Park Oskarshamn': 'Oskarshamn',
+  'Kulturhuset Hartwig': 'Stockholm',
+  Nationalmuseum: 'Stockholm',
+  'Hovdala slott': 'Hässleholm',
+  'Café Mosaic': 'Västerås',
+  Oktoberteatern: 'Södertälje',
+  // L'Jazz i Ljungskile
+  'Uddevalla Folkets Hus': 'Uddevalla',
+  'Ljungskile folkhögskola': 'Ljungskile',
+  Ljungskilegården: 'Ljungskile',
+  // Gotlandsmusiken turnéscener
+  'Dalhems Bygdegård': 'Gotland',
+  'Östergarns Bygdegård': 'Gotland',
+  'Rute Folkets Hus': 'Gotland',
+  'Havdhems Bygdegård': 'Gotland',
+  'Almedalsbibliotekets Foajé': 'Visby',
   // Festivals used as venue
   'Ystad Sweden Jazz Festival': 'Ystad',
   'Umeå Jazzfestival': 'Umeå',
