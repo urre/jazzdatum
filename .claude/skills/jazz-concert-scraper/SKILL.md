@@ -3,7 +3,7 @@ name: jazz-concert-scraper
 description: >-
   Collect upcoming jazz concerts from Swedish venue websites (Glenn Miller Café,
   Nefertiti, Fasching, Konserthuset, Svensk Jazz, Vara Konserthus, Digga
-  Göteborg) and save them as MDX content for jazzkonserter.se. Use when the user
+  Göteborg, World of Volvo) and save them as MDX content for jazzkonserter.se. Use when the user
   asks to scrape, collect, fetch, or update jazz concerts / concert dates, or
   to add concerts to jazzkonserter.se. Triggers: "scrape concerts", "update
   concerts", "fetch jazz dates", "collect concert data", "check for new jazz
@@ -55,6 +55,7 @@ This is the helper script's default `--content-dir`. Override with
 | 21 | Nortic | https://www.nortic.se/ | National ticket platform — **the single highest-yield source**. Both the old and new sites are JS-rendered, but the search API is open: see "Nortic API" below. Covers Fasching's full calendar plus small jazz clubs (Gävle JazzClub, Jazzklubb Nordost, Jazzklubben Hässleholm, Borlänge Jazzklubb) that have no scrapeable site of their own |
 | 22 | Katrineholm Jazz- och Bluesfestival | https://www.katrineholmjazz.se/ | One-day festival at **Stora Djulö Herrgård, Katrineholm**, late July (2026 edition was 25 July). Static HTML, program is a time→artist table on the homepage; no prices or ticket links. `venue: "Stora Djulö Herrgård"`, `festival: "Katrineholm Jazz- och Bluesfestival"`. Next year's program appears in spring — re-check then |
 | 23 | Gotlandsmusiken | https://www.gotlandsmusiken.se/ | Gotland's regional music institution. Not a listings source in its own right, but the **only place the venues of its multi-date tours appear** — Nortic sells such tours as one event with `venue: null` and `nr_of_shows: 5`. When a Nortic row has no venue and `organizer_name: "Gotlandsmusiken"`, look the tour up here and split it into one concert per stop (bygdegårdar across Gotland → city `Gotland`) |
+| 24 | World of Volvo | https://www.worldofvolvo.com/sv/live/ | Göteborg (Ceno Brasserie). The `/sv/live/` listing is JS-rendered, but **every event page is in https://www.worldofvolvo.com/sitemap.xml** — filter `/sv/live/` (drop `/en/`, `/live/` itself and the non-concert `julbord`/`julkvall`/`talks-` pages) and `curl` each page: static HTML with the date and time in the `<main>` heading and again in a "Namn på event / Datum / Tid / Rum/plats" block. The weekly **Thursday Jazz** series runs Thursdays 19:00–20:45 at Ceno Brasserie, free (`price: "Fri entré"`, no ticket needed — the tickster links on those pages are for the 149 kr exhibition add-on, so **do not** use them as `ticketUrl`). Ticketed concerts (e.g. Göteborg Jazz Orchestra) do have a real `tickster.worldofvolvo.com` link but no price on the page |
 
 ## Nortic API
 

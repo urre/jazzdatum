@@ -95,6 +95,7 @@ The site aggregates concerts from these Swedish jazz venues:
 8. **Digga Göteborg** - https://digga.se/app/goteborg/konsert/jazz
 9. **Nortic** - https://www.nortic.se/ (national ticket platform; via its open search API — also the only working route to Fasching's full calendar)
 10. **Katrineholm Jazz- och Bluesfestival** - https://www.katrineholmjazz.se/
+11. **World of Volvo** - https://www.worldofvolvo.com/sv/live/ (Göteborg; weekly free "Thursday Jazz" at Ceno Brasserie — event pages come from the sitemap)
 
 The full source list, per-venue quirks and the Nortic API details live in the
 skill: `.claude/skills/jazz-concert-scraper/SKILL.md`.
