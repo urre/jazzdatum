@@ -1,7 +1,6 @@
 ---
-import type { Concert } from '../lib/concerts';
+import { cityForVenue, type Concert } from '../lib/concerts';
 import { venueColor, venueTextColor } from '../lib/venueColor';
-import { cityFor } from '../lib/venueCity';
 import AddToCalendar from './AddToCalendar.astro';
 import styles from './ConcertRow.module.css';
 
@@ -14,7 +13,7 @@ const { data, id } = concert;
 
 const vc = venueColor(data.venue);
 const venueText = venueTextColor(vc);
-const city = cityFor(data.venue);
+const city = cityForVenue(data.venue);
 const href = `/concerts/${id}`;
 ---
 

@@ -164,7 +164,10 @@ const groupsWithStart = groups.map((group) => {
         <div class={styles.results} data-results>
           {groupsWithStart.map(({ group, startIndex }) => (
             <section class={styles.group} data-group hidden={startIndex >= PAGE_SIZE}>
-              <h2 class={styles.dateHeading} data-group-date>{group.label}</h2>
+              <h2 class={styles.dateHeading} data-group-date data-key={group.key}>
+                {group.label}
+                <span class={styles.todayPill} data-today-pill hidden>Idag</span>
+              </h2>
               <ul class={styles.list}>
                 {group.concerts.map((concert, i) => (
                   <li
@@ -245,6 +248,14 @@ const groupsWithStart = groups.map((group) => {
     const now = new Date();
     const pad = (n: number) => String(n).padStart(2, '0');
     const nowLocal = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
+
+    // Mark today's date heading — like the filter above, this has to run in
+    // the browser, since a build-time "today" would go stale.
+    const todayKey = nowLocal.slice(0, 10);
+    for (const heading of root.querySelectorAll<HTMLElement>('[data-results] [data-group-date]')) {
+      const pill = heading.querySelector<HTMLElement>('[data-today-pill]');
+      if (pill) pill.hidden = heading.dataset.key !== todayKey;
+    }
 
     function matches(row: HTMLElement) {
       const q = (input?.value ?? '').trim().toLowerCase();
