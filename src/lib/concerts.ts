@@ -309,6 +309,8 @@ const VENUE_CITY: Record<string, string> = {
   'Kafé de luxe': 'Växjö',
   'Broken Dreams Auditorium': 'Borlänge',
   'Lunds Stadsteater': 'Lund',
+  'Anatolia Grill': 'Skene',
+  'Forum Oskarshamn': 'Oskarshamn',
   // Festivals used as venue
   'Ystad Sweden Jazz Festival': 'Ystad',
   'Umeå Jazzfestival': 'Umeå',
