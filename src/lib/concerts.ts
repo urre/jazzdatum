@@ -311,6 +311,8 @@ const VENUE_CITY: Record<string, string> = {
   'Lunds Stadsteater': 'Lund',
   'Anatolia Grill': 'Skene',
   'Forum Oskarshamn': 'Oskarshamn',
+  'Söderhamns Teater': 'Söderhamn',
+  'Folkets Hus Motala': 'Motala',
   // Festivals used as venue
   'Ystad Sweden Jazz Festival': 'Ystad',
   'Umeå Jazzfestival': 'Umeå',
