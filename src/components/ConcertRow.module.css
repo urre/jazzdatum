@@ -9,7 +9,14 @@
   transition: background 0.12s ease;
 }
 
-.row:hover {
+@media (hover: hover) and (pointer: fine) {
+  .row:hover {
+    background: var(--color-bg);
+  }
+}
+
+/* Touch has no hover: give the row feedback the moment a finger lands. */
+.row:active {
   background: var(--color-bg);
 }
 
@@ -35,8 +42,10 @@
   z-index: 0;
 }
 
-.titleLink:hover {
-  color: var(--color-accent);
+@media (hover: hover) and (pointer: fine) {
+  .titleLink:hover {
+    color: var(--color-accent);
+  }
 }
 
 /* Colour-coded venue tag — the scannable element */
@@ -102,8 +111,10 @@
   flex-shrink: 0;
 }
 
-.row:hover .chevron {
-  color: var(--color-accent);
+@media (hover: hover) and (pointer: fine) {
+  .row:hover .chevron {
+    color: var(--color-accent);
+  }
 }
 
 @media (max-width: 768px) {

@@ -106,9 +106,18 @@
 
 html {
   scroll-behavior: smooth;
+  /* No grey flash on tap — controls carry their own :active feedback. */
+  -webkit-tap-highlight-color: transparent;
+  /* No font inflation when an iPhone turns to landscape. */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
+  /* viewport-fit=cover lets the page paint under the notch, home indicator
+     and Safari's floating bars; pad the content back out of those zones. */
+  padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px)
+    env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px);
   font-family: var(--font-sans);
   font-weight: 400;
   line-height: 1.6;
@@ -165,9 +174,11 @@ img {
   transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
 }
 
-.button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 26px rgba(47, 111, 224, 0.34);
+@media (hover: hover) and (pointer: fine) {
+  .button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 26px rgba(47, 111, 224, 0.34);
+  }
 }
 
 .button--accent {
@@ -175,8 +186,10 @@ img {
   box-shadow: 0 8px 20px rgba(243, 128, 31, 0.3);
 }
 
-.button--accent:hover {
-  box-shadow: 0 12px 26px rgba(243, 128, 31, 0.36);
+@media (hover: hover) and (pointer: fine) {
+  .button--accent:hover {
+    box-shadow: 0 12px 26px rgba(243, 128, 31, 0.36);
+  }
 }
 
 .button--ghost {
@@ -186,9 +199,30 @@ img {
   box-shadow: none;
 }
 
-.button--ghost:hover {
-  background: var(--color-bg-grey);
-  box-shadow: none;
+@media (hover: hover) and (pointer: fine) {
+  .button--ghost:hover {
+    background: var(--color-bg-grey);
+    box-shadow: none;
+  }
+}
+
+/* Controls: fire taps without the double-tap-zoom wait, and don't select
+   their labels on long-press. Content text stays selectable. */
+a,
+button,
+summary,
+select,
+[role='button'] {
+  touch-action: manipulation;
+}
+
+button,
+summary,
+.button,
+[role='button'] {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
 }
 
 /* Pressed state — subtle push-down on any button */
@@ -254,8 +288,10 @@ button:active,
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-[data-browser] select:hover {
-  border-color: var(--color-accent);
+@media (hover: hover) and (pointer: fine) {
+  [data-browser] select:hover {
+    border-color: var(--color-accent);
+  }
 }
 
 [data-browser] select:open {
@@ -309,11 +345,18 @@ button:active,
   cursor: pointer;
 }
 
-[data-browser] select option:hover,
 [data-browser] select option:focus {
   background: var(--color-bg-grey);
   color: var(--color-accent);
   outline: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  [data-browser] select option:hover {
+    background: var(--color-bg-grey);
+    color: var(--color-accent);
+    outline: none;
+  }
 }
 
 [data-browser] select option:checked {

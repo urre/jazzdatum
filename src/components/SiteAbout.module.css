@@ -40,10 +40,12 @@
   transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 
-.themeToggle:hover {
-  color: var(--color-accent);
-  border-color: var(--color-accent);
-  background: var(--color-bg-grey);
+@media (hover: hover) and (pointer: fine) {
+  .themeToggle:hover {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+    background: var(--color-bg-grey);
+  }
 }
 
 .themeToggle svg {

@@ -28,14 +28,16 @@ import styles from './SiteAbout.module.css';
     const btn = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
     if (!btn) return;
     const label = btn.querySelector<HTMLElement>('[data-theme-label]');
-    const meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
+    const metas = document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]');
 
     // Reflect the current theme on the button (label, pressed state, browser UI).
+    // Both per-scheme theme-color tags get the active surface color, so a
+    // manual choice wins over the OS scheme.
     const sync = () => {
       const dark = root.dataset.theme === 'dark';
       btn.setAttribute('aria-pressed', String(dark));
       if (label) label.textContent = dark ? 'Ljust läge' : 'Mörkt läge';
-      if (meta) meta.setAttribute('content', dark ? '#181520' : '#2f6fe0');
+      metas.forEach((m) => m.setAttribute('content', dark ? '#181520' : '#ffffff'));
     };
     sync();
 

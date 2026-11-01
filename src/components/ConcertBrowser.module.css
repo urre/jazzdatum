@@ -3,7 +3,7 @@
   grid-template-columns: 30% minmax(0, 1fr);
   gap: 0;
   align-items: stretch;
-  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 /* ---- Sidebar (edge-to-edge, flush left, full height) ---- */
@@ -15,7 +15,7 @@
 /* Inner wrapper sticks while the white panel stretches full height. */
 .sidebarInner {
   position: sticky;
-  top: 0;
+  top: env(safe-area-inset-top, 0px);
   padding: var(--space-6);
 }
 
@@ -61,9 +61,11 @@
   border-radius: var(--radius-sm);
 }
 
-.reset:hover {
-  color: var(--color-accent);
-  background: var(--color-bg-grey);
+@media (hover: hover) and (pointer: fine) {
+  .reset:hover {
+    color: var(--color-accent);
+    background: var(--color-bg-grey);
+  }
 }
 
 .field {
@@ -179,7 +181,7 @@
   /* Stick while scrolling through a long day, so the date stays in view.
      z-index clears the rows' calendar buttons (z-index 1). */
   position: sticky;
-  top: 0;
+  top: env(safe-area-inset-top, 0px);
   z-index: 2;
   background: var(--color-surface);
   display: flex;
@@ -252,9 +254,11 @@
   transition: background 0.15s ease, color 0.15s ease;
 }
 
-.pageBtn:hover:not(:disabled) {
-  background: var(--color-bg-grey);
-  color: var(--color-accent);
+@media (hover: hover) and (pointer: fine) {
+  .pageBtn:hover:not(:disabled) {
+    background: var(--color-bg-grey);
+    color: var(--color-accent);
+  }
 }
 
 .pageBtn:disabled {

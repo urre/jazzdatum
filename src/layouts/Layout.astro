@@ -55,7 +55,14 @@ const schemas = [websiteSchema, orgSchema, ...pageSchemas];
 <html lang="sv">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {/* viewport-fit=cover paints under the notch and Safari's bars (content is
+        padded back out with env(safe-area-inset-*) in global.css);
+        resizes-content makes Android's keyboard shrink the layout like iOS. */}
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content" />
+    {/* Browser chrome matches the page surface, one value per scheme. A saved
+        manual theme overrides both (here and in the footer toggle). */}
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#181520" />
     {/* Set the theme before first paint to avoid a flash. Uses a saved choice
         if present, otherwise the OS preference. The toggle lives in the footer. */}
     <script is:inline>
@@ -64,10 +71,13 @@ const schemas = [websiteSchema, orgSchema, ...pageSchemas];
           const saved = localStorage.getItem('theme');
           const theme = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
           document.documentElement.dataset.theme = theme;
+          if (saved) {
+            const color = saved === 'dark' ? '#181520' : '#ffffff';
+            document.querySelectorAll('meta[name="theme-color"]').forEach((m) => m.setAttribute('content', color));
+          }
         } catch (e) {}
       })();
     </script>
-    <meta name="theme-color" content="#2f6fe0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />

@@ -33,15 +33,22 @@
   transition: opacity 0.15s ease;
 }
 
-.nav a:hover,
 .nav a[aria-current='page'] {
   opacity: 1;
   text-decoration: underline;
   text-underline-offset: 4px;
 }
 
+@media (hover: hover) and (pointer: fine) {
+  .nav a:hover {
+    opacity: 1;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+}
+
 .main {
-  min-height: 60vh;
+  min-height: 60svh;
 }
 
 .footer {

@@ -31,9 +31,11 @@
   display: none;
 }
 
-.trigger:hover {
-  background: var(--color-bg-grey);
-  color: var(--color-accent);
+@media (hover: hover) and (pointer: fine) {
+  .trigger:hover {
+    background: var(--color-bg-grey);
+    color: var(--color-accent);
+  }
 }
 
 /* Compact = icon-only button used in the list rows */
@@ -49,9 +51,11 @@
   justify-content: center;
 }
 
-.compact .trigger:hover {
-  background: var(--color-bg-grey);
-  color: var(--color-accent);
+@media (hover: hover) and (pointer: fine) {
+  .compact .trigger:hover {
+    background: var(--color-bg-grey);
+    color: var(--color-accent);
+  }
 }
 
 .trigger:active {
@@ -83,7 +87,9 @@
   white-space: nowrap;
 }
 
-.item:hover {
-  background: var(--color-bg-grey);
-  color: var(--color-accent);
+@media (hover: hover) and (pointer: fine) {
+  .item:hover {
+    background: var(--color-bg-grey);
+    color: var(--color-accent);
+  }
 }

@@ -4,7 +4,7 @@
   grid-template-columns: 30% minmax(0, 1fr);
   gap: 0;
   align-items: stretch;
-  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 .sidebar {
@@ -14,7 +14,7 @@
 
 .sidebarInner {
   position: sticky;
-  top: 0;
+  top: env(safe-area-inset-top, 0px);
   padding: var(--space-6);
 }
 
@@ -53,10 +53,12 @@
   height: 18px;
 }
 
-.back:hover {
-  color: var(--color-accent);
-  background: var(--color-bg-grey);
-  transform: translateX(-2px);
+@media (hover: hover) and (pointer: fine) {
+  .back:hover {
+    color: var(--color-accent);
+    background: var(--color-bg-grey);
+    transform: translateX(-2px);
+  }
 }
 
 /* Hero text — sits at the top of the venue-tinted main area */
@@ -136,9 +138,11 @@
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.cta:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow);
+@media (hover: hover) and (pointer: fine) {
+  .cta:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+  }
 }
 
 /* White secondary buttons — venue website + map */
@@ -157,9 +161,11 @@
   transition: background 0.15s ease, color 0.15s ease;
 }
 
-.secondary:hover {
-  background: var(--color-bg-grey);
-  color: var(--color-accent);
+@media (hover: hover) and (pointer: fine) {
+  .secondary:hover {
+    background: var(--color-bg-grey);
+    color: var(--color-accent);
+  }
 }
 
 /* Pressed state — subtle push-down */

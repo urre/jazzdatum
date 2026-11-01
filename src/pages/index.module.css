@@ -9,6 +9,8 @@
   text-decoration: none;
 }
 
-.pageTitle a:hover {
-  text-decoration: underline;
+@media (hover: hover) and (pointer: fine) {
+  .pageTitle a:hover {
+    text-decoration: underline;
+  }
 }
