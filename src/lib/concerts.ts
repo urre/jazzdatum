@@ -313,6 +313,10 @@ const VENUE_CITY: Record<string, string> = {
   'Forum Oskarshamn': 'Oskarshamn',
   'Söderhamns Teater': 'Söderhamn',
   'Folkets Hus Motala': 'Motala',
+  'Jönköping Teater': 'Jönköping',
+  'Råda Rum': 'Mölnlycke',
+  Biografbaren: 'Eskilstuna',
+  'Solna Folkets Hus': 'Solna',
   // Festivals used as venue
   'Ystad Sweden Jazz Festival': 'Ystad',
   'Umeå Jazzfestival': 'Umeå',
