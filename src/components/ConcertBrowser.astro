@@ -9,6 +9,10 @@ interface Props {
 }
 
 const { concerts } = Astro.props;
+// Concert pages pass their own content in the "main" slot and reuse only the
+// sidebar; filter changes there navigate back to the listing.
+const detail = Astro.slots.has('main');
+const Title = detail ? 'p' : 'h1';
 const cities = uniqueCities(concerts);
 const venues = uniqueVenues(concerts);
 const festivals = uniqueFestivals(concerts);
@@ -47,10 +51,19 @@ const groupsWithStart = groups.map((group) => {
 });
 ---
 
-<div data-browser class={styles.browser}>
+<div data-browser data-mode={detail ? 'detail' : 'list'} class={styles.browser}>
   <aside class={styles.sidebar}>
     <div class={styles.sidebarInner}>
-    <slot />
+    <div class={styles.titleRow}>
+      <Title class={styles.pageTitle}><a href="/">Jazzkonserter</a></Title>
+      <button type="button" class={styles.favToggle} data-fav-toggle aria-pressed="false" title="Visa favoriter">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21l7.8-7.6 1-1.1a5.5 5.5 0 0 0 0-7.7z" />
+        </svg>
+        <span>Favoriter</span>
+        <span class={styles.favCount} data-fav-count hidden></span>
+      </button>
+    </div>
 
     <button type="button" class={styles.filterToggle} data-sidebar-toggle aria-expanded="false" aria-controls="cb-filters">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -146,6 +159,9 @@ const groupsWithStart = groups.map((group) => {
     </div>
   </aside>
 
+  {detail ? (
+    <slot name="main" />
+  ) : (
   <div class={styles.main}>
     {total === 0 ? (
       <p class={styles.empty}>Inga kommande konserter just nu. Kolla tillbaka snart!</p>
@@ -172,6 +188,7 @@ const groupsWithStart = groups.map((group) => {
                 {group.concerts.map((concert, i) => (
                   <li
                     data-row
+                    data-id={concert.id}
                     data-search={searchText(concert)}
                     data-city={cityForVenue(concert.data.venue)}
                     data-venue={concert.data.venue}
@@ -198,9 +215,17 @@ const groupsWithStart = groups.map((group) => {
       </>
     )}
   </div>
+  )}
 </div>
 
 <script>
+  import { navigate } from 'astro:transitions/client';
+  import { getFavorites, FAVORITES_EVENT } from '../lib/favorites';
+
+  // The favorites listener lives on document, which outlives page swaps —
+  // keep a handle so each init replaces the previous page's listener.
+  let onFavoritesChange: (() => void) | null = null;
+
   // Re-run on every Astro view-transition navigation, not just first load —
   // bundled scripts execute once, but astro:page-load fires on each swap.
   function initBrowser() {
@@ -217,6 +242,8 @@ const groupsWithStart = groups.map((group) => {
     const activeCountEl = root.querySelector<HTMLElement>('[data-active-count]');
     const sidebarToggle = root.querySelector<HTMLButtonElement>('[data-sidebar-toggle]');
     const sidebarBody = root.querySelector<HTMLElement>('[data-sidebar-body]');
+    const favToggle = root.querySelector<HTMLButtonElement>('[data-fav-toggle]');
+    const favCount = root.querySelector<HTMLElement>('[data-fav-count]');
     const rows = Array.from(root.querySelectorAll<HTMLElement>('[data-results] [data-row]'));
     const groups = Array.from(root.querySelectorAll<HTMLElement>('[data-results] [data-group]'));
     const count = root.querySelector<HTMLElement>('[data-count]');
@@ -227,11 +254,19 @@ const groupsWithStart = groups.map((group) => {
     const prevBtns = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-prev]'));
     const nextBtns = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-next]'));
 
+    const detail = root.dataset.mode === 'detail';
     let page = 1;
 
     // Restore filter + pagination state from the URL query, so returning from a
-    // detail page — or opening a shared link — reproduces the same view.
-    const params = new URLSearchParams(location.search);
+    // detail page — or opening a shared link — reproduces the same view. On a
+    // detail page the sidebar mirrors the listing the visitor came from.
+    let lastListing: string | null = null;
+    try {
+      lastListing = sessionStorage.getItem('jk:lastListing');
+    } catch (e) {}
+    const params = new URLSearchParams(
+      detail ? (lastListing ? new URL(lastListing, location.origin).search : '') : location.search,
+    );
     if (input && params.has('q')) input.value = params.get('q')!;
     if (cityFilter && params.has('city')) cityFilter.value = params.get('city')!;
     if (venueFilter && params.has('venue')) venueFilter.value = params.get('venue')!;
@@ -240,6 +275,8 @@ const groupsWithStart = groups.map((group) => {
     if (dateTo && params.has('to')) dateTo.value = params.get('to')!;
     if (pageSizeSel && params.has('size')) pageSizeSel.value = params.get('size')!;
     if (params.has('page')) page = Math.max(1, parseInt(params.get('page')!, 10) || 1);
+    let favOnly = params.get('fav') === '1';
+    let favs = getFavorites();
 
     // "Now" by the viewer's clock — the build-time upcoming filter freezes on
     // a static site, so we re-floor here so past concerts never show. We floor
@@ -270,6 +307,7 @@ const groupsWithStart = groups.map((group) => {
       const start = row.dataset.start ?? `${date}T23:59`;
       return (
         start >= nowLocal &&
+        (!favOnly || favs.has(row.dataset.id ?? '')) &&
         (!q || (row.dataset.search ?? '').includes(q)) &&
         (!city || row.dataset.city === city) &&
         (!venue || row.dataset.venue === venue) &&
@@ -287,12 +325,11 @@ const groupsWithStart = groups.map((group) => {
       if (festivalFilter?.value) n++;
       if (dateFrom?.value) n++;
       if (dateTo?.value) n++;
+      if (favOnly) n++;
       return n;
     }
 
-    // Mirror the current state into the URL (replaceState — no history spam) and
-    // remember it for the detail page's back link.
-    function syncUrl() {
+    function stateQuery() {
       const p = new URLSearchParams();
       const q = (input?.value ?? '').trim();
       if (q) p.set('q', q);
@@ -301,9 +338,16 @@ const groupsWithStart = groups.map((group) => {
       if (festivalFilter?.value) p.set('festival', festivalFilter.value);
       if (dateFrom?.value) p.set('from', dateFrom.value);
       if (dateTo?.value) p.set('to', dateTo.value);
+      if (favOnly) p.set('fav', '1');
       if (pageSizeSel && pageSizeSel.value !== '25') p.set('size', pageSizeSel.value);
       if (page > 1) p.set('page', String(page));
-      const qs = p.toString();
+      return p.toString();
+    }
+
+    // Mirror the current state into the URL (replaceState — no history spam) and
+    // remember it for the detail page's back link.
+    function syncUrl() {
+      const qs = stateQuery();
       const url = location.pathname + (qs ? `?${qs}` : '');
       history.replaceState(history.state, '', url);
       try {
@@ -335,19 +379,39 @@ const groupsWithStart = groups.map((group) => {
       for (const b of prevBtns) b.disabled = page <= 1;
       for (const b of nextBtns) b.disabled = page >= pageCount;
       for (const nav of paginations) nav.hidden = pageCount <= 1;
-      if (noResults) noResults.style.display = total === 0 ? 'block' : 'none';
+      if (noResults) {
+        noResults.style.display = total === 0 ? 'block' : 'none';
+        noResults.textContent = favOnly && favs.size === 0
+          ? 'Inga favoriter än – tryck på hjärtat vid en konsert för att spara den.'
+          : 'Inga konserter matchar din filtrering.';
+      }
 
+      updateActiveCount();
+      syncUrl();
+    }
+
+    function updateActiveCount() {
       if (activeCountEl) {
         const a = activeFilters();
         activeCountEl.textContent = a === 0 ? 'Inga aktiva' : `${a} aktiva`;
       }
-
-      syncUrl();
+      favToggle?.setAttribute('aria-pressed', String(favOnly));
+      if (favCount) {
+        favCount.textContent = String(favs.size);
+        favCount.hidden = favs.size === 0;
+      }
     }
 
     function reset() {
       page = 1;
+      if (detail) return showListing();
       render();
+    }
+
+    // Detail page: a filter change opens the listing with that filter applied.
+    function showListing() {
+      const qs = stateQuery();
+      navigate('/' + (qs ? `?${qs}` : ''));
     }
 
     function clearFilters() {
@@ -358,10 +422,19 @@ const groupsWithStart = groups.map((group) => {
       if (dateFrom) dateFrom.value = '';
       if (dateTo) dateTo.value = '';
       if (pageSizeSel) pageSizeSel.value = '25';
+      favOnly = false;
       reset();
     }
 
-    input?.addEventListener('input', reset);
+    input?.addEventListener('input', () => {
+      // Keep typing in the listing's search box after the navigation.
+      if (detail) {
+        try {
+          sessionStorage.setItem('jk:focusSearch', '1');
+        } catch (e) {}
+      }
+      reset();
+    });
     cityFilter?.addEventListener('change', reset);
     venueFilter?.addEventListener('change', reset);
     festivalFilter?.addEventListener('change', reset);
@@ -369,6 +442,17 @@ const groupsWithStart = groups.map((group) => {
     dateTo?.addEventListener('change', reset);
     pageSizeSel?.addEventListener('change', reset);
     resetBtn?.addEventListener('click', clearFilters);
+    favToggle?.addEventListener('click', () => {
+      favOnly = !favOnly;
+      reset();
+    });
+    if (onFavoritesChange) document.removeEventListener(FAVORITES_EVENT, onFavoritesChange);
+    onFavoritesChange = () => {
+      favs = getFavorites();
+      if (detail) updateActiveCount();
+      else render();
+    };
+    document.addEventListener(FAVORITES_EVENT, onFavoritesChange);
     sidebarToggle?.addEventListener('click', () => {
       const open = sidebarBody?.hasAttribute('data-open') ?? false;
       sidebarBody?.toggleAttribute('data-open', !open);
@@ -381,6 +465,19 @@ const groupsWithStart = groups.map((group) => {
       page = p;
       render();
     }
+
+    if (detail) {
+      updateActiveCount();
+      return;
+    }
+
+    try {
+      if (input && sessionStorage.getItem('jk:focusSearch')) {
+        sessionStorage.removeItem('jk:focusSearch');
+        input.focus();
+        input.setSelectionRange(input.value.length, input.value.length);
+      }
+    } catch (e) {}
 
     render();
   }

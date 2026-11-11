@@ -99,7 +99,7 @@
 .right {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: var(--space-1);
   flex-shrink: 0;
   margin-left: auto;
 }
@@ -127,7 +127,8 @@
   }
   .venue {
     width: auto;
-    max-width: 100%;
+    /* Leave room for heart + calendar + chevron so they never wrap below. */
+    max-width: calc(100% - 130px);
     min-width: 0;
     flex-shrink: 1;
     order: -1;

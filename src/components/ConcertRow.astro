@@ -2,6 +2,7 @@
 import { cityForVenue, type Concert } from '../lib/concerts';
 import { venueColor, venueTextColor } from '../lib/venueColor';
 import AddToCalendar from './AddToCalendar.astro';
+import FavoriteButton from './FavoriteButton.astro';
 import styles from './ConcertRow.module.css';
 
 interface Props {
@@ -31,6 +32,7 @@ const href = `/concerts/${id}`;
   <span class={styles.timeCol}>{data.time}</span>
 
   <span class={styles.right}>
+    <FavoriteButton id={id} title={data.artist} variant="compact" />
     <AddToCalendar
       title={data.artist}
       venue={data.venue}

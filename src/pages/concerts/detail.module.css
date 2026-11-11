@@ -1,23 +1,4 @@
-/* ---- Full-width layout, matching the start page ---- */
-.browser {
-  display: grid;
-  grid-template-columns: 30% minmax(0, 1fr);
-  gap: 0;
-  align-items: stretch;
-  min-height: 100dvh;
-}
-
-.sidebar {
-  background: var(--color-surface);
-  border-right: 1px solid var(--color-border);
-}
-
-.sidebarInner {
-  position: sticky;
-  top: env(safe-area-inset-top, 0px);
-  padding: var(--space-6);
-}
-
+/* ---- Content column (the sidebar comes from ConcertBrowser) ---- */
 .main {
   min-width: 0;
   padding: var(--space-8);
@@ -32,7 +13,7 @@
   width: 100%;
 }
 
-/* ---- Back button (sidebar) ---- */
+/* ---- Back button (top of the content column) ---- */
 .back {
   display: inline-flex;
   align-items: center;
@@ -40,11 +21,11 @@
   color: var(--color-ink);
   text-decoration: none;
   font-weight: 600;
-  background: var(--color-surface);
+  background: transparent;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-pill);
   padding: var(--space-2) var(--space-4) var(--space-2) var(--space-3);
-  box-shadow: var(--shadow-sm);
+  margin-bottom: var(--space-6);
   transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
 }
 
@@ -195,37 +176,10 @@
   color: var(--color-muted);
 }
 
-/* ---- Responsive: back link, then the concert, then the About card ---- */
+/* ---- Responsive: content becomes a rounded card below the sidebar ---- */
 @media (max-width: 900px) {
-  .browser {
-    grid-template-columns: 1fr;
-    gap: var(--space-6);
-    padding: var(--space-4);
-    min-height: 0;
-  }
-  /* Flatten the sidebar so its two children become grid items in their own
-     right — that lets the back link rise above the concert while the About
-     card drops below it, without duplicating markup or splitting the column
-     on desktop. Both wrappers keep their semantics; only their boxes go. */
-  .sidebar,
-  .sidebarInner {
-    display: contents;
-  }
-  .back {
-    order: 1;
-    justify-self: start;
-  }
   .main {
-    order: 2;
     padding: var(--space-5);
     border-radius: var(--radius);
-  }
-  .about {
-    order: 3;
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow-sm);
-    padding: var(--space-6);
   }
 }

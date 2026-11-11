@@ -1,0 +1,54 @@
+---
+// Heart toggle that saves a concert as a favorite (localStorage, see
+// lib/favorites). Compact = icon-only for list rows; full = labelled pill.
+import styles from './FavoriteButton.module.css';
+
+interface Props {
+  /** Concert slug. */
+  id: string;
+  title: string;
+  variant?: 'full' | 'compact';
+}
+
+const { id, title, variant = 'full' } = Astro.props;
+---
+
+<button
+  type="button"
+  class:list={[styles.fav, { [styles.compact]: variant === 'compact' }]}
+  data-fav={id}
+  aria-pressed="false"
+  aria-label={`Spara ${title} som favorit`}
+  title="Favorit"
+>
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21l7.8-7.6 1-1.1a5.5 5.5 0 0 0 0-7.7z" />
+  </svg>
+  {variant === 'full' && <span data-fav-label>Spara</span>}
+</button>
+
+<script>
+  import { getFavorites, toggleFavorite, FAVORITES_EVENT } from '../lib/favorites';
+
+  // Bundled once, so these document-level listeners are bound a single time
+  // and cover every heart on every page swapped in by the router.
+  function sync() {
+    const favs = getFavorites();
+    for (const btn of document.querySelectorAll<HTMLButtonElement>('[data-fav]')) {
+      const on = favs.has(btn.dataset.fav ?? '');
+      btn.setAttribute('aria-pressed', String(on));
+      const label = btn.querySelector<HTMLElement>('[data-fav-label]');
+      if (label) label.textContent = on ? 'Sparad' : 'Spara';
+    }
+  }
+
+  document.addEventListener('click', (e) => {
+    const btn = (e.target as Element | null)?.closest<HTMLButtonElement>('[data-fav]');
+    if (!btn) return;
+    // The row's stretched link sits underneath — don't follow it.
+    e.preventDefault();
+    toggleFavorite(btn.dataset.fav ?? '');
+  });
+  document.addEventListener(FAVORITES_EVENT, sync);
+  document.addEventListener('astro:page-load', sync);
+</script>
