@@ -1,7 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
-import { formatDate, getUpcomingConcerts } from '../../lib/concerts';
+import { cityForVenue, formatDate, getUpcomingConcerts } from '../../lib/concerts';
 import { venueColor, venueTextColor, venueTint, venueTintDark } from '../../lib/venueColor';
 import { musicEventSchema } from '../../lib/eventSchema';
 import AddToCalendar from '../../components/AddToCalendar.astro';
@@ -30,6 +30,7 @@ const vcTint = venueTint(vc);
 const vcTintDark = venueTintDark(vc);
 const hasBody = (concert.body ?? '').trim().length > 0;
 const showTitle = data.title && data.title !== data.artist;
+const city = cityForVenue(data.venue);
 const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(data.venue)}`;
 const eventSchema = musicEventSchema(concert, Astro.site ?? Astro.url);
 
@@ -66,6 +67,12 @@ const metaDescription =
           {showTitle && <p class={styles.title}>{data.title}</p>}
 
           <dl class={styles.facts}>
+            {city && (
+              <div class={styles.fact}>
+                <dt>Stad</dt>
+                <dd>{city}</dd>
+              </div>
+            )}
             <div class={styles.fact}>
               <dt>Datum</dt>
               <dd>{formatDate(data.date)}</dd>
